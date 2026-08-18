@@ -25,6 +25,11 @@ Telegram as oportunidades dentro dos seus critérios.
   primeiro na Compra Consórcios (que também tem adapter pronto e
   desativado). Ver seção "Status dos 20 sites" pra evidência de cada um.
   Qualquer um pode ser reativado de volta em `sites.active`.
+- **Consórcio Market: confirmado seguro (custódia), adapter ainda não
+  construído** — o backend deles (Supabase) está devolvendo "permission
+  denied" pra tabela de cotas no momento; não dá pra validar contra dado
+  real enquanto isso não voltar. Retestar mais tarde (endpoint e chave
+  pública já documentados no README).
 - **1 site confirmado como exigindo login**: ConsorcioCred
   (`api.consorciocred.com/offer` responde 401 sem sessão).
 - **1 site bloqueado por proteção anti-bot**: MyCotas/Mycon (Cloudflare
@@ -243,7 +248,7 @@ requisição real à internet.
 | Bidcon | Não | ✅ **Ativo** | Conta Notarial, escrow no Banco Safra, CNJ 197/2025. API pública, exige header Origin/Referer |
 | Prime Cotas | Não | ⚠️ Pronto, **desativado** | Sem custódia — WhatsApp direto com "consultor". Supabase REST com chave anon pública |
 | Tramontana Consórcios | Não | ⚠️ Pronto, **desativado** | Sem custódia — botão "Tenho interesse", contato direto. API pública (plataforma "themedeploy") |
-| Consórcio Market | Não | Pendente | Tabela pública rica (tem saldo devedor!), mas vem via RSC — precisa scraping de HTML renderizado |
+| Consórcio Market | Não | ✅ Seguro, ⚠️ adapter pendente | Confirmado "pagamento em custódia" (mesmo texto da Contemplei/Bidcon). Backend real é Supabase (`cjoioybkbukcpuuhrggo.supabase.co/rest/v1/cotas`, chave publishable capturada), não RSC como eu achava antes — mas a tabela está retornando "permission denied" (erro 42501) no momento, do lado deles. Adapter não foi construído porque não dava pra validar contra dado real. Retestar mais tarde. |
 | Grupo LuME | Não | ⚠️ Pronto, **desativado** | Sem custódia — FAQ deles confirma: "entrada paga ao Grupo LuME". Raspagem de tabela HTML |
 | Contemplado SP | Não | Pendente | Preço visível na home |
 | DP Consórcios | Não | Pendente | Preço visível na listagem |
