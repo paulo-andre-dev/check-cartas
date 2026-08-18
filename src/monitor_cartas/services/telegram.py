@@ -7,6 +7,7 @@ comandos precisa ficar de pé continuamente para responder a qualquer hora.
 Nunca logar o token. Comandos só são aceitos de chat_ids em
 TELEGRAM_ALLOWED_CHAT_IDS.
 """
+import html
 import logging
 from datetime import datetime, timezone
 
@@ -68,6 +69,58 @@ def format_alert_message(cota: CotaContemplada) -> str:
     ):
         linhas.insert(1, f"⚠️ {cota.inconsistency_reason}")
     return "\n".join(linhas)
+
+
+def format_opportunity_line(cota: CotaContemplada) -> str:
+    """Uma linha compacta por cota, pra listas — o alerta individual
+    detalhado continua sendo format_alert_message."""
+    classe = OPPORTUNITY_LABELS.get(cota.opportunity_class, "—")
+    admin = html.escape(cota.administrator or "administradora não informada")
+    parcela = (
+        f"{format_brl(cota.current_installment)}/mês"
+        if cota.current_installment is not None
+        else "parcela não informada"
+    )
+    pct = format_percentage(cota.entry_percentage)
+    credito = format_brl(cota.nominal_credit)
+    link = html.escape(cota.source_url, quote=True)
+    return (
+        f"{classe} <b>{credito}</b> · {pct} entrada · {parcela} · {admin} · "
+        f'<a href="{link}">abrir</a> · <code>{cota.source_site} {cota.source_id}</code>'
+    )
+
+
+MAX_MESSAGE_CHARS = 3500  # margem de segurança sob o limite de 4096 do Telegram
+
+
+def _chunk_opportunity_list(cotas: list[CotaContemplada], title: str) -> list[str]:
+    """Divide a lista em uma ou mais mensagens, cada uma com seu próprio
+    cabeçalho, respeitando o limite de tamanho do Telegram."""
+    header_base = html.escape(title)
+    messages: list[str] = []
+    current_lines: list[str] = []
+    current_len = 0
+    part = 1
+
+    def header(part_num: int) -> str:
+        suffix = f" ({len(cotas)})" if part_num == 1 else f" (cont. {part_num})"
+        return f"<b>{header_base}</b>{suffix}"
+
+    for cota in cotas:
+        line = format_opportunity_line(cota)
+        projected = current_len + len(line) + 1
+        if current_lines and projected + len(header(part)) > MAX_MESSAGE_CHARS:
+            messages.append(header(part) + "\n" + "\n".join(current_lines))
+            part += 1
+            current_lines = []
+            current_len = 0
+        current_lines.append(line)
+        current_len += len(line) + 1
+
+    if current_lines:
+        messages.append(header(part) + "\n" + "\n".join(current_lines))
+
+    return messages
 
 
 class TelegramNotifier:
@@ -137,6 +190,27 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         )
         await update.message.reply_text(text)
 
+    async def _reply_grouped_by_modality(update: Update, cotas: list[CotaContemplada]) -> None:
+        imoveis = [c for c in cotas if normalize_modality(c.modality) == MODALITY_IMOVEL]
+        veiculos = [c for c in cotas if normalize_modality(c.modality) == MODALITY_VEICULO]
+        outros = [
+            c
+            for c in cotas
+            if normalize_modality(c.modality) not in (MODALITY_IMOVEL, MODALITY_VEICULO)
+        ]
+
+        for titulo, grupo in (
+            ("🏠 Imóvel", imoveis),
+            ("🚗 Veículo", veiculos),
+            ("❓ Modalidade não identificada", outros),
+        ):
+            if not grupo:
+                continue
+            for chunk in _chunk_opportunity_list(grupo, titulo):
+                await update.message.reply_text(
+                    chunk, parse_mode="HTML", disable_web_page_preview=True
+                )
+
     async def cmd_novas(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
             return
@@ -152,8 +226,7 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         if not novas:
             await update.message.reply_text("Nenhuma cota nova dentro dos tetos configurados.")
             return
-        for cota in novas[:10]:
-            await update.message.reply_text(format_alert_message(cota), parse_mode="HTML")
+        await _reply_grouped_by_modality(update, novas)
 
     async def cmd_melhores(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
@@ -185,8 +258,7 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
                 "Nenhuma oportunidade com preço calculado dentro dos tetos configurados."
             )
             return
-        for cota in ranked[:limit]:
-            await update.message.reply_text(format_alert_message(cota), parse_mode="HTML")
+        await _reply_grouped_by_modality(update, ranked[:limit])
 
     async def cmd_detalhes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
