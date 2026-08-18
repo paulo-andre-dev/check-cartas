@@ -72,6 +72,15 @@ class MonitoringConfig:
     alert_if_last_success_older_than_hours: int = 30
     missing_runs_before_removed: int = 3
     cycle_interval_seconds: int = 86400
+    minimum_snapshot_ratio: Decimal = Decimal("0.50")
+
+
+@dataclass
+class SitePolicy:
+    collect: bool = True
+    alert: bool = True
+    transaction_status: str = "conditional"
+    payment_protection: str = "unknown"
 
 
 @dataclass
@@ -79,6 +88,7 @@ class Settings:
     financial: FinancialConfig
     monitoring: MonitoringConfig
     active_sites: list[str] = field(default_factory=list)
+    site_policies: dict[str, SitePolicy] = field(default_factory=dict)
     telegram_bot_token: str | None = None
     telegram_allowed_chat_ids: list[str] = field(default_factory=list)
     data_dir: Path = PROJECT_ROOT / "data"
@@ -99,6 +109,9 @@ class Settings:
     @property
     def evidence_dir(self) -> Path:
         return self.data_dir / "evidence"
+
+    def site_policy(self, site: str) -> SitePolicy:
+        return self.site_policies.get(site, SitePolicy())
 
 
 def _parse_modality_limits(raw: dict) -> dict[str, ModalityLimits]:
@@ -210,14 +223,30 @@ def load_settings(config_path: Path | None = None) -> Settings:
         cycle_interval_seconds=int(
             os.environ.get("CYCLE_INTERVAL_SECONDS", mon.get("cycle_interval_seconds", 86400))
         ),
+        minimum_snapshot_ratio=Decimal(str(mon.get("minimum_snapshot_ratio", "0.50"))),
     )
 
+    sites_raw = raw.get("sites", {})
+    policies = {
+        name: SitePolicy(
+            collect=bool(policy.get("collect", True)),
+            alert=bool(policy.get("alert", True)),
+            transaction_status=policy.get("transaction_status", "conditional"),
+            payment_protection=policy.get("payment_protection", "unknown"),
+        )
+        for name, policy in sites_raw.get("policies", {}).items()
+    }
     sites_env = os.environ.get("SITES_ACTIVE")
-    sites = (
+    requested_sites = (
         [s.strip() for s in sites_env.split(",") if s.strip()]
         if sites_env
-        else raw.get("sites", {}).get("active", [])
+        else sites_raw.get("active", [name for name, policy in policies.items() if policy.collect])
     )
+    sites = [
+        name
+        for name in requested_sites
+        if policies.get(name, SitePolicy()).collect
+    ]
 
     # TELEGRAM_CHAT_ID (singular) é o nome usado nos outros bots do autor —
     # aceito como alias de TELEGRAM_ALLOWED_CHAT_IDS pra poder reaproveitar
@@ -233,6 +262,7 @@ def load_settings(config_path: Path | None = None) -> Settings:
         financial=financial,
         monitoring=monitoring,
         active_sites=sites,
+        site_policies=policies,
         telegram_bot_token=os.environ.get("TELEGRAM_BOT_TOKEN") or None,
         telegram_allowed_chat_ids=chat_ids,
         data_dir=data_dir,

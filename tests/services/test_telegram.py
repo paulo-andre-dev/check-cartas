@@ -1,12 +1,17 @@
 from decimal import Decimal
 
+import pytest
+
 from monitor_cartas.core.statuses import OpportunityClass
+from monitor_cartas.repositories.sqlite import QuotaRepository
 from monitor_cartas.services.telegram import (
     MAX_MESSAGE_CHARS,
+    TelegramNotifier,
     _chunk_opportunity_list,
     format_alert_message,
     format_opportunity_line,
 )
+from monitor_cartas.settings import MonitoringConfig, Settings
 from tests.conftest import make_cota
 
 
@@ -87,3 +92,37 @@ def test_chunk_opportunity_list_splits_when_too_long():
 
 def test_chunk_opportunity_list_empty():
     assert _chunk_opportunity_list([], "🏠 Imóvel") == []
+
+
+@pytest.mark.asyncio
+async def test_send_alert_skips_chat_that_already_received_it(tmp_path, financial_config):
+    class FakeBot:
+        def __init__(self):
+            self.sent = []
+
+        async def send_message(self, **kwargs):
+            self.sent.append(kwargs["chat_id"])
+
+    settings = Settings(
+        financial=financial_config,
+        monitoring=MonitoringConfig(),
+        telegram_bot_token="test-token",
+        telegram_allowed_chat_ids=["chat-1", "chat-2"],
+        data_dir=tmp_path / "data",
+    )
+    repo = QuotaRepository(settings.db_path)
+    cota = make_cota(opportunity_class=OpportunityClass.GOOD)
+    repo.conn.execute(
+        "INSERT INTO alerts (sent_at, kind, source_site, source_id, chat_id, message) "
+        "VALUES ('2026-01-01', 'oportunidade', ?, ?, 'chat-1', 'anterior')",
+        (cota.source_site, cota.source_id),
+    )
+    repo.conn.commit()
+    notifier = TelegramNotifier(settings)
+    notifier._bot = FakeBot()
+
+    await notifier.send_alert(cota, repo)
+
+    assert notifier._bot.sent == ["chat-2"]
+    assert repo.alerted_chat_ids(cota.source_site, cota.source_id) == {"chat-1", "chat-2"}
+    repo.close()

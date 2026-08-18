@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 
@@ -7,6 +8,7 @@ import respx
 from httpx import Response
 
 from monitor_cartas.adapters.contemplei import LIST_ENDPOINT, ContempleiAdapter
+from monitor_cartas.core.statuses import QuotaStatus
 from monitor_cartas.settings import (
     CombinationConfig,
     ConsistencyConfig,
@@ -97,6 +99,18 @@ async def test_collect_quota_parses_real_fixture(tmp_path):
     assert Path(cota.raw_evidence_path).exists()
 
     await adapter.aclose()
+
+
+def test_detail_without_situacao_is_available_from_public_listing(tmp_path):
+    adapter = ContempleiAdapter(_settings(tmp_path))
+    item = json.loads((FIXTURES / "contemplei_detalhe_imovel.json").read_text())["data"]
+    item.pop("situacao", None)
+
+    cota = adapter._to_cota(item, "/tmp/evidence.json", datetime.now(timezone.utc))
+
+    assert cota.status == QuotaStatus.AVAILABLE
+    assert cota.is_contemplated is True
+    assert cota.status_raw == "presente na vitrine pública de contempladas"
 
 
 @pytest.mark.asyncio

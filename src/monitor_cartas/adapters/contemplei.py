@@ -150,7 +150,12 @@ class ContempleiAdapter(SiteAdapter):
             "provisório com base no crédito nominal (creditoCents).",
         ]
 
-        is_contemplated = item.get("situacao") == "Contemplada"
+        # Desde agosto/2026 o detalhe público pode omitir ``situacao``.
+        # Estes IDs vieram da própria vitrine pública de contempladas e a
+        # página visual os marca como DISPONÍVEL. A comparação antiga com
+        # None classificava incorretamente todo o estoque como indisponível.
+        situacao = item.get("situacao")
+        is_contemplated = situacao == "Contemplada" if situacao is not None else True
 
         other_costs = cents_to_decimal(item.get("taxaAnaliseCents"))
 
@@ -160,7 +165,7 @@ class ContempleiAdapter(SiteAdapter):
             source_url=f"https://contemplei.app/carta/{item['seoSlug']}/",
             collected_at=collected_at,
             status=QuotaStatus.AVAILABLE if is_contemplated else QuotaStatus.UNAVAILABLE,
-            status_raw=item.get("situacao"),
+            status_raw=situacao or "presente na vitrine pública de contempladas",
             is_contemplated=is_contemplated,
             modality=item.get("segmento"),
             administrator=item.get("administradoraNome"),

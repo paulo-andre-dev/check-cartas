@@ -32,6 +32,8 @@ class CotaContemplada(BaseModel):
     collected_at: datetime
     first_seen_at: datetime | None = None
     last_seen_at: datetime | None = None
+    transaction_status: str | None = None
+    payment_protection: str | None = None
 
     # Status
     status: QuotaStatus = QuotaStatus.UNKNOWN
@@ -110,6 +112,8 @@ class AdapterRunResult(BaseModel):
     listing_count: int = 0
     processed_count: int = 0
     error_count: int = 0
+    snapshot_complete: bool = True
+    snapshot_detail: str | None = None
     quotas: list[CotaContemplada] = []
     errors: list[str] = []
 

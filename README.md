@@ -14,17 +14,23 @@ Telegram as oportunidades dentro dos seus critérios.
   (imóvel/veículo, cada um com piso e teto de crédito e parcela próprios),
   consistência, combinações, deduplicação, persistência SQLite,
   evidências, bot de Telegram com `/silenciar`.
-- **Só 2 sites ativos: Contemplei e Bidcon** — decisão explícita do
-  usuário, priorizando segurança sobre volume. São os únicos com
-  proteção de pagamento confirmada por escrito no próprio site:
-  Contemplei tem "pagamento em custódia"; Bidcon tem Conta Notarial com
-  escrow no Banco Safra (CNJ 197/2025).
-- **5 sites com adapter pronto no código mas desativados por pagarem
-  direto ao intermediário, sem custódia**: Prime Cotas, Tramontana,
-  Franzotti, Grupo LuME, Bolsa do Consórcio — mesmo risco identificado
-  primeiro na Compra Consórcios (que também tem adapter pronto e
-  desativado). Ver seção "Status dos 20 sites" pra evidência de cada um.
-  Qualquer um pode ser reativado de volta em `sites.active`.
+- **10 fontes ativas e validadas ponta a ponta**: Contemplei, Bidcon,
+  Prime Cotas, Tramontana, Franzotti, Grupo LuME, Bolsa do Consórcio,
+  Compra Consórcios, VemCon e Capitalizza. Uma execução real em
+  18/08/2026 processou 3.282 cotas sem erro de adapter.
+- **Coleta separada de segurança transacional**: todas as fontes podem
+  contribuir com preços, mas cada uma tem `transaction_status` e
+  `payment_protection`. Fontes sem custódia confirmada aparecem com aviso
+  explícito de "somente pesquisa" e não são tratadas como canal aprovado
+  para pagamento.
+- **VemCon e Capitalizza conferidas em Chromium por amostragem**. A VemCon
+  expõe API pública com saldo devedor, grupo, cota, taxa da plataforma e
+  atualização dos dados; a Capitalizza publica tabela estruturada com
+  crédito, entrada, parcelas e saldo devedor.
+- **Contemplei corrigida após mudança da API**: o campo `situacao` deixou
+  de vir no detalhe e fazia todo o estoque ser marcado como indisponível.
+  Os dados foram confrontados visualmente com anúncios reais antes da
+  correção.
 - **Consórcio Market: confirmado seguro (custódia), adapter ainda não
   construído** — o backend deles (Supabase) está devolvendo "permission
   denied" pra tabela de cotas no momento; não dá pra validar contra dado
@@ -232,7 +238,7 @@ scraping automático — e deve ser preenchida via
 .venv/bin/pytest -q
 ```
 
-35 testes cobrindo: dinheiro/BRL, filtros financeiros (incluindo o
+84 testes cobrindo: dinheiro/BRL, filtros financeiros (incluindo o
 exemplo real de 9,53% citado no projeto), consistência aritmética,
 fingerprint/deduplicação, combinações de cotas, parsing do adapter da
 Contemplei (fixtures reais salvas em `tests/fixtures/`) e o repositório
@@ -240,21 +246,23 @@ SQLite (dedupe em segunda execução, histórico de preço, silenciar/
 reativar, remoção após N execuções sem ver o anúncio). Não fazem
 requisição real à internet.
 
-## Status dos 20 sites
+## Status das fontes inspecionadas
 
 | Site | Login? | Adapter | Observação |
 |---|---|---|---|
-| Contemplei | Não | ✅ **Ativo** | "Pagamento em custódia" — protegido até a transferência ser confirmada. API pública `/v1/anuncios/publico` |
-| Bidcon | Não | ✅ **Ativo** | Conta Notarial, escrow no Banco Safra, CNJ 197/2025. API pública, exige header Origin/Referer |
-| Prime Cotas | Não | ⚠️ Pronto, **desativado** | Sem custódia — WhatsApp direto com "consultor". Supabase REST com chave anon pública |
-| Tramontana Consórcios | Não | ⚠️ Pronto, **desativado** | Sem custódia — botão "Tenho interesse", contato direto. API pública (plataforma "themedeploy") |
+| Contemplei | Não | ✅ **Ativo** | Custódia declarada pela plataforma. API pública `/v1/anuncios/publico`; dados conferidos em Chromium. |
+| Bidcon | Não | ✅ **Ativo** | Conta Notarial/escrow declarado. API pública, exige header Origin/Referer. |
+| VemCon | Não | ✅ **Ativo** | Custódia declarada. API pública rica descoberta pelo navegador; 11 cartas ativas na validação. |
+| Capitalizza | Não | ✅ **Ativo — pesquisa** | Tabela pública rica; 96 cartas disponíveis na validação. Sem proteção de pagamento confirmada. |
+| Prime Cotas | Não | ✅ **Ativo — pesquisa** | Sem custódia confirmada — WhatsApp direto com consultor. Supabase REST público. |
+| Tramontana Consórcios | Não | ✅ **Ativo — pesquisa** | Sem custódia confirmada. API pública da plataforma themedeploy. |
 | Consórcio Market | Não | ✅ Seguro, ⚠️ adapter pendente | Confirmado "pagamento em custódia" (mesmo texto da Contemplei/Bidcon). Backend real é Supabase (`cjoioybkbukcpuuhrggo.supabase.co/rest/v1/cotas`, chave publishable capturada), não RSC como eu achava antes — mas a tabela está retornando "permission denied" (erro 42501) no momento, do lado deles. Adapter não foi construído porque não dava pra validar contra dado real. Retestar mais tarde. |
-| Grupo LuME | Não | ⚠️ Pronto, **desativado** | Sem custódia — FAQ deles confirma: "entrada paga ao Grupo LuME". Raspagem de tabela HTML |
+| Grupo LuME | Não | ✅ **Ativo — pesquisa** | Sem custódia — FAQ informa entrada paga ao Grupo LuME. Raspagem de tabela HTML. |
 | Contemplado SP | Não | Pendente | Preço visível na home |
 | DP Consórcios | Não | Pendente | Preço visível na listagem |
-| Franzotti Contemplados | Não | ⚠️ Pronto, **desativado** | Sem custódia — sinal pago direto à empresa (fundador único), só contrato particular |
-| Bolsa do Consórcio | Não | ⚠️ Pronto, **desativado** | Marketplace de corretores terceiros independentes — site só redireciona pro contato do corretor |
-| Compra Consórcios | Não | ⚠️ Pronto, **desativado** | Só intermediação, sem checkout/escrow — risco de golpe |
+| Franzotti Contemplados | Não | ✅ **Ativo — pesquisa** | Sem custódia confirmada; sinal pago direto à empresa. |
+| Bolsa do Consórcio | Não | ✅ **Ativo — pesquisa** | Marketplace de corretores; negociação externa. |
+| Compra Consórcios | Não | ✅ **Ativo — pesquisa** | Intermediação sem checkout/escrow confirmado. |
 | Cotas Contempladas | Sinal nenhum | Pendente | Preço não confirmado na leitura estática (WP + AJAX); precisa mais inspeção |
 | Consormega | Não | Pendente | Preço visível na home; listagem ainda não mapeada |
 | Toco Consórcios | Não | Pendente | WordPress com admin-ajax |

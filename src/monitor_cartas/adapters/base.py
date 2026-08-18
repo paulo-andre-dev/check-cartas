@@ -58,6 +58,8 @@ class SiteAdapter(ABC):
             listing_count=len(urls),
             processed_count=len(quotas),
             error_count=len(errors),
+            snapshot_complete=not errors,
+            snapshot_detail=("; ".join(errors[:3]) if errors else None),
             quotas=quotas,
             errors=errors,
         )

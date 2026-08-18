@@ -42,37 +42,52 @@ monitoring:
   timezone: "America/Recife"
   alert_if_last_success_older_than_hours: 30
   missing_runs_before_removed: 3
+  minimum_snapshot_ratio: 0.50
 
 sites:
   active:
     - contemplei
     - bidcon
-  # Só ficam ativos os sites com proteção de pagamento confirmada
-  # (custódia/escrow) — decisão explícita do usuário, priorizando
-  # segurança sobre volume de cotas encontradas:
-  #
-  #   Contemplei — "pagamento em custódia", dinheiro protegido até a
-  #     transferência ser confirmada.
-  #   Bidcon — Conta Notarial, escrow no Banco Safra, CNJ 197/2025.
-  #
-  # Removidos por pagarem direto ao intermediário, sem custódia (mesmo
-  # risco identificado na compra_consorcios):
-  #   prime_cotas       — contato via WhatsApp com "consultor", sem custódia.
-  #   tramontana        — botão "Tenho interesse", contato direto, sem custódia.
-  #   franzotti         — sinal pago direto à empresa (fundador único),
-  #                        formalizado só com contrato particular.
-  #   grupo_lume        — FAQ deles confirma: "entrada que será paga ao
-  #                        Grupo LuME", sem custódia.
-  #   bolsa_consorcio   — marketplace de corretores terceiros independentes;
-  #                        o site só redireciona pro contato do corretor.
-  #   compra_consorcios — mesma coisa, sem checkout nem escrow.
-  #
-  # Todos continuam com adapter funcional no código (registry.py) — dá
-  # pra reativar qualquer um só adicionando de volta nesta lista.
-  #
-  # ConsorcioCred (exige login) e MyCotas/Mycon (bloqueio anti-bot Cloudflare)
-  # ficam de fora da automação por outro motivo — nenhum adapter existe
-  # pra eles ainda.
+    - prime_cotas
+    - tramontana
+    - franzotti
+    - grupo_lume
+    - bolsa_consorcio
+    - compra_consorcios
+    - vemcon
+    - capitalizza
+
+  policies:
+    contemplei:
+      collect: true
+      alert: true
+      transaction_status: conditional
+      payment_protection: escrow_claimed
+    bidcon:
+      collect: true
+      alert: true
+      transaction_status: conditional
+      payment_protection: escrow_claimed
+    vemcon:
+      collect: true
+      alert: true
+      transaction_status: conditional
+      payment_protection: escrow_claimed
+    capitalizza:
+      collect: true
+      alert: true
+      transaction_status: research_only
+      payment_protection: unknown
+    prime_cotas: &research_only
+      collect: true
+      alert: true
+      transaction_status: research_only
+      payment_protection: none_confirmed
+    tramontana: *research_only
+    franzotti: *research_only
+    grupo_lume: *research_only
+    bolsa_consorcio: *research_only
+    compra_consorcios: *research_only
 
 evidence:
   keep_raw_json: true
