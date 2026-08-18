@@ -101,7 +101,8 @@ CREATE TABLE IF NOT EXISTS scraper_runs (
     started_at TEXT NOT NULL,
     finished_at TEXT,
     trigger TEXT NOT NULL,
-    success INTEGER NOT NULL DEFAULT 0
+    success INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL DEFAULT 'RUNNING'
 );
 
 CREATE TABLE IF NOT EXISTS adapter_results (
@@ -115,6 +116,8 @@ CREATE TABLE IF NOT EXISTS adapter_results (
     listing_count INTEGER NOT NULL DEFAULT 0,
     processed_count INTEGER NOT NULL DEFAULT 0,
     error_count INTEGER NOT NULL DEFAULT 0,
+    snapshot_complete INTEGER NOT NULL DEFAULT 1,
+    snapshot_detail TEXT,
     errors_json TEXT,
     FOREIGN KEY (run_id) REFERENCES scraper_runs(id)
 );
@@ -134,4 +137,13 @@ CREATE TABLE IF NOT EXISTS raw_evidence (
 
 def apply_schema(conn) -> None:
     conn.executescript(SCHEMA)
+    _ensure_column(conn, "scraper_runs", "status", "TEXT NOT NULL DEFAULT 'RUNNING'")
+    _ensure_column(conn, "adapter_results", "snapshot_complete", "INTEGER NOT NULL DEFAULT 1")
+    _ensure_column(conn, "adapter_results", "snapshot_detail", "TEXT")
     conn.commit()
+
+
+def _ensure_column(conn, table: str, column: str, ddl: str) -> None:
+    columns = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+    if column not in columns:
+        conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}")

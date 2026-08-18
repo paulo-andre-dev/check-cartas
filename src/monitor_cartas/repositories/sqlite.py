@@ -281,16 +281,20 @@ class QuotaRepository:
 
     def start_run(self, trigger: str, when: datetime) -> int:
         cur = self.conn.execute(
-            "INSERT INTO scraper_runs (started_at, trigger, success) VALUES (?, ?, 0)",
+            "INSERT INTO scraper_runs (started_at, trigger, success, status) "
+            "VALUES (?, ?, 0, 'RUNNING')",
             (when.isoformat(), trigger),
         )
         self.conn.commit()
         return cur.lastrowid
 
-    def finish_run(self, run_id: int, when: datetime, success: bool) -> None:
+    def finish_run(
+        self, run_id: int, when: datetime, success: bool, status: str | None = None
+    ) -> None:
+        status = status or ("SUCCESS" if success else "FAILED")
         self.conn.execute(
-            "UPDATE scraper_runs SET finished_at=?, success=? WHERE id=?",
-            (when.isoformat(), int(success), run_id),
+            "UPDATE scraper_runs SET finished_at=?, success=?, status=? WHERE id=?",
+            (when.isoformat(), int(success), status, run_id),
         )
         self.conn.commit()
 
@@ -307,8 +311,9 @@ class QuotaRepository:
 
         self.conn.execute(
             "INSERT INTO adapter_results (run_id, site, started_at, finished_at, access_ok, "
-            "block_reason, listing_count, processed_count, error_count, errors_json) "
-            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "block_reason, listing_count, processed_count, error_count, "
+            "snapshot_complete, snapshot_detail, errors_json) "
+            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (
                 run_id,
                 result.site,
@@ -319,10 +324,21 @@ class QuotaRepository:
                 result.listing_count,
                 result.processed_count,
                 result.error_count,
+                int(result.snapshot_complete),
+                result.snapshot_detail,
                 json.dumps(result.errors, ensure_ascii=False),
             ),
         )
         self.conn.commit()
+
+    def latest_complete_listing_count(self, site: str) -> int | None:
+        row = self.conn.execute(
+            "SELECT listing_count FROM adapter_results "
+            "WHERE site=? AND access_ok=1 AND snapshot_complete=1 AND listing_count > 0 "
+            "ORDER BY id DESC LIMIT 1",
+            (site,),
+        ).fetchone()
+        return int(row["listing_count"]) if row else None
 
     def list_errors(self, limit: int = 20) -> list[sqlite3.Row]:
         return self.conn.execute(
@@ -355,6 +371,14 @@ class QuotaRepository:
             ),
         )
         self.conn.commit()
+
+    def alerted_chat_ids(self, site: str, source_id: str, kind: str = "oportunidade") -> set[str]:
+        rows = self.conn.execute(
+            "SELECT DISTINCT chat_id FROM alerts "
+            "WHERE kind=? AND source_site=? AND source_id=? AND chat_id IS NOT NULL",
+            (kind, site, source_id),
+        ).fetchall()
+        return {str(row["chat_id"]) for row in rows}
 
 
 def _fingerprint_of(cota: CotaContemplada) -> str | None:

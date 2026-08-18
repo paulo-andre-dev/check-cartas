@@ -63,6 +63,14 @@ def format_alert_message(cota: CotaContemplada) -> str:
         f"Link: {cota.source_url}",
         f"ID: <code>{cota.source_site} {cota.source_id}</code>",
     ]
+    if cota.transaction_status == "research_only":
+        linhas.insert(
+            1,
+            "⚠️ <b>Somente pesquisa:</b> use esta fonte para comparar valores; "
+            "não efetue pagamento por ela sem validação independente.",
+        )
+    elif cota.payment_protection == "escrow_claimed":
+        linhas.insert(1, "🛡️ Custódia declarada pela plataforma; contrato ainda deve ser conferido.")
     if cota.inconsistency_level and cota.inconsistency_level.value not in (
         "CONSISTENTE",
         "NAO_APLICAVEL",
@@ -85,9 +93,10 @@ def format_opportunity_line(cota: CotaContemplada, index: int) -> str:
     credito = format_brl(cota.nominal_credit)
     entrada = format_brl(cota.advertised_entry)
     link = html.escape(cota.source_url, quote=True)
+    risk = " · ⚠️ pesquisa" if cota.transaction_status == "research_only" else ""
     return (
         f"{index}. {classe} <b>{credito}</b> — Entrada {entrada} ({pct})\n"
-        f'    {parcela} · {admin} · <a href="{link}">abrir</a> · '
+        f'    {parcela} · {admin}{risk} · <a href="{link}">abrir</a> · '
         f"<code>{cota.source_site} {cota.source_id}</code>"
     )
 
@@ -144,7 +153,12 @@ class TelegramNotifier:
             logger.warning("Telegram não configurado — alerta não enviado: %s %s", cota.source_site, cota.source_id)
             return
 
+        delivered_to = (
+            repo.alerted_chat_ids(cota.source_site, cota.source_id) if repo is not None else set()
+        )
         for chat_id in self.settings.telegram_allowed_chat_ids:
+            if chat_id in delivered_to:
+                continue
             await self._bot.send_message(chat_id=chat_id, text=message, parse_mode="HTML")
             if repo is not None:
                 repo.conn.execute(
