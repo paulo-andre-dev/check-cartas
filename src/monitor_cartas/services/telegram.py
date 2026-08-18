@@ -10,6 +10,8 @@ TELEGRAM_ALLOWED_CHAT_IDS.
 import logging
 from datetime import datetime, timezone
 
+from monitor_cartas.core.filters import passes_modality_limits
+from monitor_cartas.core.modality import MODALITY_IMOVEL, MODALITY_VEICULO, normalize_modality
 from monitor_cartas.core.models import CotaContemplada
 from monitor_cartas.core.money import format_brl, format_percentage
 from monitor_cartas.core.statuses import OpportunityClass
@@ -28,11 +30,27 @@ OPPORTUNITY_LABELS = {
     OpportunityClass.INVALID_DATA: "DADO INVÁLIDO",
 }
 
+MODALITY_LABELS = {
+    MODALITY_IMOVEL: "🏠 Imóvel",
+    MODALITY_VEICULO: "🚗 Veículo",
+}
+
+REPORTABLE_CLASSES = {
+    OpportunityClass.GOLD,
+    OpportunityClass.EXCEPTIONAL,
+    OpportunityClass.VERY_GOOD,
+    OpportunityClass.GOOD,
+}
+
 
 def format_alert_message(cota: CotaContemplada) -> str:
     classe = OPPORTUNITY_LABELS.get(cota.opportunity_class, "—")
+    modalidade = MODALITY_LABELS.get(
+        normalize_modality(cota.modality), cota.modality or "modalidade não identificada"
+    )
     linhas = [
         f"<b>{classe}</b> — {cota.source_site}",
+        f"Modalidade: {modalidade}",
         f"Administradora: {cota.administrator or 'não informada'}",
         f"Crédito: {format_brl(cota.nominal_credit)}",
         f"Entrada anunciada: {format_brl(cota.advertised_entry)}",
@@ -124,9 +142,15 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
             return
         from monitor_cartas.core.statuses import QuotaStatus
 
-        novas = [c for c in repo.list_opportunities() if c.status == QuotaStatus.NEW]
+        novas = [
+            c
+            for c in repo.list_opportunities()
+            if c.status == QuotaStatus.NEW
+            and c.opportunity_class in REPORTABLE_CLASSES
+            and passes_modality_limits(c, settings.financial) is not False
+        ]
         if not novas:
-            await update.message.reply_text("Nenhuma cota nova.")
+            await update.message.reply_text("Nenhuma cota nova dentro dos tetos configurados.")
             return
         for cota in novas[:10]:
             await update.message.reply_text(format_alert_message(cota), parse_mode="HTML")
@@ -135,11 +159,19 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         if not await guarded(update):
             return
         ranked = sorted(
-            (c for c in repo.list_opportunities() if c.entry_percentage is not None),
+            (
+                c
+                for c in repo.list_opportunities()
+                if c.entry_percentage is not None
+                and c.opportunity_class in REPORTABLE_CLASSES
+                and passes_modality_limits(c, settings.financial) is not False
+            ),
             key=lambda c: c.entry_percentage,
         )
         if not ranked:
-            await update.message.reply_text("Nenhuma oportunidade com preço calculado.")
+            await update.message.reply_text(
+                "Nenhuma oportunidade com preço calculado dentro dos tetos configurados."
+            )
             return
         for cota in ranked[:5]:
             await update.message.reply_text(format_alert_message(cota), parse_mode="HTML")

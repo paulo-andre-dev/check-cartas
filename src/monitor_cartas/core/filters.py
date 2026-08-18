@@ -115,14 +115,20 @@ def passes_modality_limits(cota: CotaContemplada, config: FinancialConfig) -> bo
     """Teto de crédito e de parcela por modalidade (imóvel/veículo).
 
     None = não dá pra avaliar (falta dado); True/False = passou ou não.
-    Modalidade não reconhecida cai no teto genérico (max_monthly_payment,
-    sem teto de crédito).
+
+    Modalidade não reconhecida (nem imóvel nem veículo) sempre bloqueia
+    (False) — nunca passa "por baixo do radar" só respeitando o teto
+    genérico de parcela sem checar crédito. Se a modalidade não tem teto
+    configurado em config.yaml, cai pro teto genérico (comportamento
+    antigo do projeto, antes de existir teto por modalidade).
     """
     from monitor_cartas.core.modality import normalize_modality
 
     modality = normalize_modality(cota.modality)
-    limits = config.modality_limits.get(modality) if modality else None
+    if modality is None:
+        return False
 
+    limits = config.modality_limits.get(modality)
     if limits is None:
         return passes_budget(cota, config)
 

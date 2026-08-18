@@ -117,8 +117,28 @@ def test_passes_modality_limits_veiculo_has_lower_caps(financial_config):
     assert passes_modality_limits(carro_parcela_estoura, financial_config) is False
 
 
-def test_passes_modality_limits_unknown_modality_falls_back_to_generic(financial_config):
-    cota = make_cota(modality="servico", current_installment=Decimal("5500"))
+def test_passes_modality_limits_unrecognized_modality_always_blocks(financial_config):
+    # Modalidade não reconhecida (nem imóvel nem veículo) nunca deve passar
+    # "por baixo", mesmo com parcela baixa e crédito baixo — o risco é não
+    # conseguir aplicar o teto certo, então bloqueia sempre.
+    cota = make_cota(
+        modality="servico", nominal_credit=Decimal("10000"), current_installment=Decimal("100")
+    )
+    assert passes_modality_limits(cota, financial_config) is False
+
+    cota_sem_modalidade = make_cota(modality=None, current_installment=Decimal("100"))
+    assert passes_modality_limits(cota_sem_modalidade, financial_config) is False
+
+
+def test_passes_modality_limits_recognized_modality_without_configured_cap_falls_back(
+    financial_config,
+):
+    # Se a modalidade É reconhecida mas não tem teto configurado em
+    # config.yaml pra ela, cai pro teto genérico de parcela (comportamento
+    # antigo, antes de existir teto por modalidade) — diferente de
+    # modalidade desconhecida, que sempre bloqueia.
+    financial_config.modality_limits = {}
+    cota = make_cota(modality="imoveis", current_installment=Decimal("5500"))
     assert passes_modality_limits(cota, financial_config) is True
-    cota_estoura = make_cota(modality="servico", current_installment=Decimal("6500"))
+    cota_estoura = make_cota(modality="imoveis", current_installment=Decimal("6500"))
     assert passes_modality_limits(cota_estoura, financial_config) is False
