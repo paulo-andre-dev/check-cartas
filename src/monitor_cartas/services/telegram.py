@@ -71,8 +71,8 @@ def format_alert_message(cota: CotaContemplada) -> str:
     return "\n".join(linhas)
 
 
-def format_opportunity_line(cota: CotaContemplada) -> str:
-    """Uma linha compacta por cota, pra listas — o alerta individual
+def format_opportunity_line(cota: CotaContemplada, index: int) -> str:
+    """Um item numerado de duas linhas, pra listas — o alerta individual
     detalhado continua sendo format_alert_message."""
     classe = OPPORTUNITY_LABELS.get(cota.opportunity_class, "—")
     admin = html.escape(cota.administrator or "administradora não informada")
@@ -83,10 +83,12 @@ def format_opportunity_line(cota: CotaContemplada) -> str:
     )
     pct = format_percentage(cota.entry_percentage)
     credito = format_brl(cota.nominal_credit)
+    entrada = format_brl(cota.advertised_entry)
     link = html.escape(cota.source_url, quote=True)
     return (
-        f"{classe} <b>{credito}</b> · {pct} entrada · {parcela} · {admin} · "
-        f'<a href="{link}">abrir</a> · <code>{cota.source_site} {cota.source_id}</code>'
+        f"{index}. {classe} <b>{credito}</b> — Entrada {entrada} ({pct})\n"
+        f'    {parcela} · {admin} · <a href="{link}">abrir</a> · '
+        f"<code>{cota.source_site} {cota.source_id}</code>"
     )
 
 
@@ -94,8 +96,8 @@ MAX_MESSAGE_CHARS = 3500  # margem de segurança sob o limite de 4096 do Telegra
 
 
 def _chunk_opportunity_list(cotas: list[CotaContemplada], title: str) -> list[str]:
-    """Divide a lista em uma ou mais mensagens, cada uma com seu próprio
-    cabeçalho, respeitando o limite de tamanho do Telegram."""
+    """Divide a lista em uma ou mais mensagens numeradas, cada uma com seu
+    próprio cabeçalho, respeitando o limite de tamanho do Telegram."""
     header_base = html.escape(title)
     messages: list[str] = []
     current_lines: list[str] = []
@@ -106,19 +108,19 @@ def _chunk_opportunity_list(cotas: list[CotaContemplada], title: str) -> list[st
         suffix = f" ({len(cotas)})" if part_num == 1 else f" (cont. {part_num})"
         return f"<b>{header_base}</b>{suffix}"
 
-    for cota in cotas:
-        line = format_opportunity_line(cota)
-        projected = current_len + len(line) + 1
+    for i, cota in enumerate(cotas, start=1):
+        line = format_opportunity_line(cota, i)
+        projected = current_len + len(line) + 2
         if current_lines and projected + len(header(part)) > MAX_MESSAGE_CHARS:
-            messages.append(header(part) + "\n" + "\n".join(current_lines))
+            messages.append(header(part) + "\n\n" + "\n\n".join(current_lines))
             part += 1
             current_lines = []
             current_len = 0
         current_lines.append(line)
-        current_len += len(line) + 1
+        current_len += len(line) + 2
 
     if current_lines:
-        messages.append(header(part) + "\n" + "\n".join(current_lines))
+        messages.append(header(part) + "\n\n" + "\n\n".join(current_lines))
 
     return messages
 
@@ -165,15 +167,13 @@ def _allowed(update, settings: Settings) -> bool:
     return chat_id in settings.telegram_allowed_chat_ids
 
 
+# Só os dois comandos do dia a dia aparecem sugeridos ao digitar "/" no
+# Telegram. Os outros (/status, /detalhes, /silenciar, /reativar,
+# /silenciadas, /erros) continuam funcionando normalmente se digitados —
+# só não poluem o menu.
 BOT_COMMANDS = [
-    ("status", "Última execução bem-sucedida do coletor"),
     ("novas", "Cotas novas dentro dos tetos configurados"),
     ("melhores", "Top oportunidades por entrada % (padrão 20, ex: /melhores 30)"),
-    ("detalhes", "Detalhes de uma cota — /detalhes <site> <id>"),
-    ("silenciar", "Parar de receber alerta de uma cota — /silenciar <site> <id>"),
-    ("reativar", "Reativar alerta de uma cota silenciada — /reativar <site> <id>"),
-    ("silenciadas", "Lista de cotas silenciadas"),
-    ("erros", "Erros/bloqueios registrados por site"),
 ]
 
 

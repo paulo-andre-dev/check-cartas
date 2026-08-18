@@ -117,6 +117,18 @@ def test_passes_modality_limits_veiculo_has_lower_caps(financial_config):
     assert passes_modality_limits(carro_parcela_estoura, financial_config) is False
 
 
+def test_passes_modality_limits_veiculo_has_minimum_credit(financial_config):
+    # carta de carro pequena demais (abaixo de 20k) não vale a pena olhar
+    carro_barato_demais = make_cota(
+        modality="veiculo", nominal_credit=Decimal("15000"), current_installment=Decimal("500")
+    )
+    carro_no_piso = make_cota(
+        modality="veiculo", nominal_credit=Decimal("20000"), current_installment=Decimal("500")
+    )
+    assert passes_modality_limits(carro_barato_demais, financial_config) is False
+    assert passes_modality_limits(carro_no_piso, financial_config) is True
+
+
 def test_passes_modality_limits_unrecognized_modality_always_blocks(financial_config):
     # Modalidade não reconhecida (nem imóvel nem veículo) nunca deve passar
     # "por baixo", mesmo com parcela baixa e crédito baixo — o risco é não

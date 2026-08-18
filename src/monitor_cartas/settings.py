@@ -45,6 +45,7 @@ class ModalityLimits:
     não entra na lista de oportunidades.
     """
 
+    min_credit: Decimal | None = None
     max_credit: Decimal | None = None
     max_monthly_payment: Decimal | None = None
 
@@ -110,6 +111,7 @@ def _parse_modality_limits(raw: dict) -> dict[str, ModalityLimits]:
         if not entry:
             continue
         limits[modality_key] = ModalityLimits(
+            min_credit=Decimal(str(entry["min_credit"])) if "min_credit" in entry else None,
             max_credit=Decimal(str(entry["max_credit"])) if "max_credit" in entry else None,
             max_monthly_payment=(
                 Decimal(str(entry["max_monthly_payment"]))
@@ -133,12 +135,14 @@ def _apply_env_overrides(financial: FinancialConfig) -> None:
     from monitor_cartas.core.modality import MODALITY_IMOVEL, MODALITY_VEICULO
 
     for env_prefix, modality_key in (("IMOVEL", MODALITY_IMOVEL), ("VEICULO", MODALITY_VEICULO)):
+        min_credit = _env_decimal(f"{env_prefix}_MIN_CREDIT")
         max_credit = _env_decimal(f"{env_prefix}_MAX_CREDIT")
         max_parcela = _env_decimal(f"{env_prefix}_MAX_MONTHLY_PAYMENT")
-        if max_credit is None and max_parcela is None:
+        if min_credit is None and max_credit is None and max_parcela is None:
             continue
         existing = financial.modality_limits.get(modality_key, ModalityLimits())
         financial.modality_limits[modality_key] = ModalityLimits(
+            min_credit=min_credit if min_credit is not None else existing.min_credit,
             max_credit=max_credit if max_credit is not None else existing.max_credit,
             max_monthly_payment=(
                 max_parcela if max_parcela is not None else existing.max_monthly_payment

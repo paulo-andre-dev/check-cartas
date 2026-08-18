@@ -133,6 +133,9 @@ def passes_modality_limits(cota: CotaContemplada, config: FinancialConfig) -> bo
         return passes_budget(cota, config)
 
     credit = cota.liquid_credit or cota.updated_credit or cota.nominal_credit
+    if limits.min_credit is not None and credit is not None and credit < limits.min_credit:
+        return False
+
     if limits.max_credit is not None and credit is not None and credit > limits.max_credit:
         return False
 

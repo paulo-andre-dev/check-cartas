@@ -21,6 +21,7 @@ financial:
       max_credit: 400000.00
       max_monthly_payment: 6000.00
     veiculo:
+      min_credit: 20000.00
       max_credit: 200000.00
       max_monthly_payment: 2500.00
 

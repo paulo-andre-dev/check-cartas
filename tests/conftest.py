@@ -55,7 +55,9 @@ def financial_config() -> FinancialConfig:
                 max_credit=Decimal("400000.00"), max_monthly_payment=Decimal("6000.00")
             ),
             MODALITY_VEICULO: ModalityLimits(
-                max_credit=Decimal("200000.00"), max_monthly_payment=Decimal("2500.00")
+                min_credit=Decimal("20000.00"),
+                max_credit=Decimal("200000.00"),
+                max_monthly_payment=Decimal("2500.00"),
             ),
         },
     )

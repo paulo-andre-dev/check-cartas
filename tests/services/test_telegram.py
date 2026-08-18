@@ -46,17 +46,25 @@ def test_format_opportunity_line_contains_key_fields():
         source_id="243339",
         source_url="https://contemplei.app/carta/exemplo/",
     )
-    line = format_opportunity_line(cota)
+    line = format_opportunity_line(cota, 1)
+    assert line.startswith("1.")
     assert "Racon Consórcios" in line
     assert "121.209" in line
     assert "22.6" in line
+    assert "Entrada" in line
     assert 'href="https://contemplei.app/carta/exemplo/"' in line
     assert "contemplei 243339" in line
 
 
+def test_format_opportunity_line_includes_entrada_value():
+    cota = make_cota(advertised_entry=Decimal("24920"))
+    line = format_opportunity_line(cota, 1)
+    assert "24.920" in line
+
+
 def test_format_opportunity_line_escapes_html_in_administrator():
     cota = make_cota(administrator="A & B <consorcios>")
-    line = format_opportunity_line(cota)
+    line = format_opportunity_line(cota, 1)
     assert "<consorcios>" not in line
     assert "&lt;consorcios&gt;" in line
 
