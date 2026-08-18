@@ -158,6 +158,14 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
     async def cmd_melhores(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
             return
+        limit = 5
+        if context.args:
+            try:
+                limit = max(1, min(int(context.args[0]), 50))
+            except ValueError:
+                await update.message.reply_text("Uso: /melhores [quantidade] (padrão 5, máx 50)")
+                return
+
         ranked = sorted(
             (
                 c
@@ -173,7 +181,7 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
                 "Nenhuma oportunidade com preço calculado dentro dos tetos configurados."
             )
             return
-        for cota in ranked[:5]:
+        for cota in ranked[:limit]:
             await update.message.reply_text(format_alert_message(cota), parse_mode="HTML")
 
     async def cmd_detalhes(update: Update, context: ContextTypes.DEFAULT_TYPE):

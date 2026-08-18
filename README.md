@@ -124,9 +124,15 @@ mais de um chat). Cole os dois no `.env` deste projeto.
 ```
 
 Isso sobe um processo separado e contínuo (não é o mesmo processo do
-`run` diário). Comandos disponíveis: `/status`, `/novas`, `/melhores`,
-`/detalhes <site> <id>`, `/silenciar <site> <id>`, `/reativar <site> <id>`,
+`run` diário). Comandos disponíveis: `/status`, `/novas`, `/melhores
+[quantidade]` (padrão 5, máximo 50 — ex: `/melhores 40`), `/detalhes
+<site> <id>`, `/silenciar <site> <id>`, `/reativar <site> <id>`,
 `/silenciadas`, `/erros`.
+
+`/novas` e `/melhores` só mostram cotas de classe reportável (OURO até
+BOA, nunca NORMAL) e dentro do teto de crédito/parcela da modalidade —
+mesmo filtro do alerta automático. Ordenação de `/melhores` é sempre por
+entrada %, da menor pra maior.
 
 Sem token configurado, o `run` funciona normalmente e apenas loga um
 aviso em vez de enviar o alerta — nada quebra.
