@@ -165,15 +165,37 @@ def _allowed(update, settings: Settings) -> bool:
     return chat_id in settings.telegram_allowed_chat_ids
 
 
+BOT_COMMANDS = [
+    ("status", "Última execução bem-sucedida do coletor"),
+    ("novas", "Cotas novas dentro dos tetos configurados"),
+    ("melhores", "Top oportunidades por entrada % (padrão 20, ex: /melhores 30)"),
+    ("detalhes", "Detalhes de uma cota — /detalhes <site> <id>"),
+    ("silenciar", "Parar de receber alerta de uma cota — /silenciar <site> <id>"),
+    ("reativar", "Reativar alerta de uma cota silenciada — /reativar <site> <id>"),
+    ("silenciadas", "Lista de cotas silenciadas"),
+    ("erros", "Erros/bloqueios registrados por site"),
+]
+
+
 def build_bot_application(settings: Settings, repo: QuotaRepository):
     """Monta a Application do python-telegram-bot com os comandos do projeto."""
-    from telegram import Update
+    from telegram import BotCommand, Update
     from telegram.ext import Application, CommandHandler, ContextTypes
 
     if not settings.telegram_bot_token:
         raise RuntimeError("TELEGRAM_BOT_TOKEN não configurado em .env")
 
-    app = Application.builder().token(settings.telegram_bot_token).build()
+    async def _register_commands(app: Application) -> None:
+        await app.bot.set_my_commands(
+            [BotCommand(cmd, desc) for cmd, desc in BOT_COMMANDS]
+        )
+
+    app = (
+        Application.builder()
+        .token(settings.telegram_bot_token)
+        .post_init(_register_commands)
+        .build()
+    )
 
     async def guarded(update: Update) -> bool:
         if not _allowed(update, settings):
