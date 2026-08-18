@@ -53,14 +53,13 @@ def test_format_opportunity_line_contains_key_fields():
     )
     line = format_opportunity_line(cota, 1)
     assert line.startswith("<b>1.")
-    assert "• Crédito:" in line
-    assert "• Entrada:" in line
-    assert "• Parcela:" in line
-    assert "• Administradora:" in line
+    assert "Cre:" in line
+    assert "Ent:" in line
+    assert "Par:" in line
+    assert "Adm:" in line
     assert "Racon Consórcios" in line
     assert "121.209" in line
     assert "22.6" in line
-    assert "Entrada" in line
     assert 'href="https://contemplei.app/carta/exemplo/"' in line
     assert "contemplei 243339" in line
 

@@ -97,12 +97,10 @@ def format_opportunity_line(cota: CotaContemplada, index: int) -> str:
     source_id = html.escape(cota.source_id)
     risk = " · ⚠️ pesquisa" if cota.transaction_status == "research_only" else ""
     return (
-        f"<b>{index}. {classe}</b>\n"
-        f"• Crédito: <b>{credito}</b>\n"
-        f"• Entrada: {entrada} ({pct})\n"
-        f"• Parcela: {parcela}\n"
-        f"• Administradora: {admin}{risk}\n"
-        f'• <a href="{link}">Abrir anúncio</a> · <code>{source_site} {source_id}</code>'
+        f"<b>{index}. {classe}</b> · Cre: <b>{credito}</b>\n"
+        f"Ent: {entrada} ({pct}) · Par: {parcela}\n"
+        f"Adm: {admin}{risk}\n"
+        f'<a href="{link}">Abrir</a> · ID: <code>{source_site} {source_id}</code>'
     )
 
 
