@@ -93,15 +93,21 @@ def format_opportunity_line(cota: CotaContemplada, index: int) -> str:
     credito = format_brl(cota.nominal_credit)
     entrada = format_brl(cota.advertised_entry)
     link = html.escape(cota.source_url, quote=True)
+    source_site = html.escape(cota.source_site)
+    source_id = html.escape(cota.source_id)
     risk = " · ⚠️ pesquisa" if cota.transaction_status == "research_only" else ""
     return (
-        f"{index}. {classe} <b>{credito}</b> — Entrada {entrada} ({pct})\n"
-        f'    {parcela} · {admin}{risk} · <a href="{link}">abrir</a> · '
-        f"<code>{cota.source_site} {cota.source_id}</code>"
+        f"<b>{index}. {classe}</b>\n"
+        f"• Crédito: <b>{credito}</b>\n"
+        f"• Entrada: {entrada} ({pct})\n"
+        f"• Parcela: {parcela}\n"
+        f"• Administradora: {admin}{risk}\n"
+        f'• <a href="{link}">Abrir anúncio</a> · <code>{source_site} {source_id}</code>'
     )
 
 
 MAX_MESSAGE_CHARS = 3500  # margem de segurança sob o limite de 4096 do Telegram
+LIST_SEPARATOR = "\n\n────────────\n\n"
 
 
 def _chunk_opportunity_list(cotas: list[CotaContemplada], title: str) -> list[str]:
@@ -114,22 +120,27 @@ def _chunk_opportunity_list(cotas: list[CotaContemplada], title: str) -> list[st
     part = 1
 
     def header(part_num: int) -> str:
-        suffix = f" ({len(cotas)})" if part_num == 1 else f" (cont. {part_num})"
+        item_label = "item" if len(cotas) == 1 else "itens"
+        suffix = (
+            f" — {len(cotas)} {item_label}"
+            if part_num == 1
+            else f" — continuação {part_num}"
+        )
         return f"<b>{header_base}</b>{suffix}"
 
     for i, cota in enumerate(cotas, start=1):
         line = format_opportunity_line(cota, i)
-        projected = current_len + len(line) + 2
+        projected = current_len + len(line) + (len(LIST_SEPARATOR) if current_lines else 0)
         if current_lines and projected + len(header(part)) > MAX_MESSAGE_CHARS:
-            messages.append(header(part) + "\n\n" + "\n\n".join(current_lines))
+            messages.append(header(part) + "\n\n" + LIST_SEPARATOR.join(current_lines))
             part += 1
             current_lines = []
             current_len = 0
         current_lines.append(line)
-        current_len += len(line) + 2
+        current_len += len(line) + (len(LIST_SEPARATOR) if len(current_lines) > 1 else 0)
 
     if current_lines:
-        messages.append(header(part) + "\n\n" + "\n\n".join(current_lines))
+        messages.append(header(part) + "\n\n" + LIST_SEPARATOR.join(current_lines))
 
     return messages
 
@@ -226,9 +237,20 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         )
         await update.message.reply_text(text)
 
-    async def _reply_grouped_by_modality(update: Update, cotas: list[CotaContemplada]) -> None:
-        imoveis = [c for c in cotas if normalize_modality(c.modality) == MODALITY_IMOVEL]
-        veiculos = [c for c in cotas if normalize_modality(c.modality) == MODALITY_VEICULO]
+    async def _reply_grouped_by_modality(
+        update: Update, cotas: list[CotaContemplada], list_title: str
+    ) -> None:
+        def by_entry(cota: CotaContemplada):
+            return (cota.entry_percentage is None, cota.entry_percentage or 0)
+
+        imoveis = sorted(
+            (c for c in cotas if normalize_modality(c.modality) == MODALITY_IMOVEL),
+            key=by_entry,
+        )
+        veiculos = sorted(
+            (c for c in cotas if normalize_modality(c.modality) == MODALITY_VEICULO),
+            key=by_entry,
+        )
         outros = [
             c
             for c in cotas
@@ -236,9 +258,9 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         ]
 
         for titulo, grupo in (
-            ("🏠 Imóvel", imoveis),
-            ("🚗 Veículo", veiculos),
-            ("❓ Modalidade não identificada", outros),
+            (f"{list_title} · 🏠 Imóveis", imoveis),
+            (f"{list_title} · 🚗 Veículos", veiculos),
+            (f"{list_title} · ❓ Outras modalidades", sorted(outros, key=by_entry)),
         ):
             if not grupo:
                 continue
@@ -263,7 +285,7 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         if not novas:
             await update.message.reply_text("Nenhuma cota nova dentro dos tetos configurados.")
             return
-        await _reply_grouped_by_modality(update, novas)
+        await _reply_grouped_by_modality(update, novas, "🆕 Cotas novas")
 
     async def cmd_melhores(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
@@ -296,7 +318,9 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
                 "Nenhuma oportunidade com preço calculado dentro dos tetos configurados."
             )
             return
-        await _reply_grouped_by_modality(update, ranked[:limit])
+        await _reply_grouped_by_modality(
+            update, ranked[:limit], "🏆 Melhores oportunidades"
+        )
 
     async def cmd_detalhes(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):

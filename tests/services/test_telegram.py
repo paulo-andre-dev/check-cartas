@@ -52,7 +52,11 @@ def test_format_opportunity_line_contains_key_fields():
         source_url="https://contemplei.app/carta/exemplo/",
     )
     line = format_opportunity_line(cota, 1)
-    assert line.startswith("1.")
+    assert line.startswith("<b>1.")
+    assert "• Crédito:" in line
+    assert "• Entrada:" in line
+    assert "• Parcela:" in line
+    assert "• Administradora:" in line
     assert "Racon Consórcios" in line
     assert "121.209" in line
     assert "22.6" in line
@@ -78,7 +82,8 @@ def test_chunk_opportunity_list_single_message_when_small():
     cotas = [make_cota(source_id=str(i)) for i in range(3)]
     messages = _chunk_opportunity_list(cotas, "🏠 Imóvel")
     assert len(messages) == 1
-    assert "(3)" in messages[0]
+    assert "3 itens" in messages[0]
+    assert "────────────" in messages[0]
 
 
 def test_chunk_opportunity_list_splits_when_too_long():
@@ -87,7 +92,7 @@ def test_chunk_opportunity_list_splits_when_too_long():
     assert len(messages) > 1
     for msg in messages:
         assert len(msg) <= MAX_MESSAGE_CHARS + 200  # cabeçalho pode passar um pouco a marca
-    assert "(cont. 2)" in messages[1]
+    assert "continuação 2" in messages[1]
 
 
 def test_chunk_opportunity_list_empty():
