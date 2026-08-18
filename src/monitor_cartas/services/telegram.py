@@ -241,7 +241,8 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
         novas = [
             c
             for c in repo.list_opportunities()
-            if c.status == QuotaStatus.NEW
+            if c.source_site in settings.active_sites
+            and c.status == QuotaStatus.NEW
             and c.opportunity_class in REPORTABLE_CLASSES
             and passes_modality_limits(c, settings.financial) is not False
         ]
@@ -268,7 +269,8 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
             (
                 c
                 for c in repo.list_opportunities()
-                if c.entry_percentage is not None
+                if c.source_site in settings.active_sites
+                and c.entry_percentage is not None
                 and c.status in available_statuses
                 and c.opportunity_class in REPORTABLE_CLASSES
                 and passes_modality_limits(c, settings.financial) is not False
