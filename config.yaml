@@ -47,20 +47,32 @@ sites:
   active:
     - contemplei
     - bidcon
-    - prime_cotas
-    - tramontana
-    - franzotti
-    - grupo_lume
-    - bolsa_consorcio
-  # ConsorcioCred (exige login) e MyCotas/Mycon (bloqueio anti-bot Cloudflare)
-  # ficam de fora da automação — nenhum adapter foi criado pra eles.
+  # Só ficam ativos os sites com proteção de pagamento confirmada
+  # (custódia/escrow) — decisão explícita do usuário, priorizando
+  # segurança sobre volume de cotas encontradas:
   #
-  # compra_consorcios removida por risco de golpe: o site é só uma
-  # intermediadora (J. Rodrigues Lima Intermediação de Negócios ME, não é
-  # administradora nem tem vínculo com instituição financeira), sem
-  # checkout, sem conta de garantia/escrow — todo pagamento vai direto pra
-  # essa empresa por fora, sem estrutura de proteção ao comprador. O
-  # adapter continua no código (registry.py) se um dia quiser reativar.
+  #   Contemplei — "pagamento em custódia", dinheiro protegido até a
+  #     transferência ser confirmada.
+  #   Bidcon — Conta Notarial, escrow no Banco Safra, CNJ 197/2025.
+  #
+  # Removidos por pagarem direto ao intermediário, sem custódia (mesmo
+  # risco identificado na compra_consorcios):
+  #   prime_cotas       — contato via WhatsApp com "consultor", sem custódia.
+  #   tramontana        — botão "Tenho interesse", contato direto, sem custódia.
+  #   franzotti         — sinal pago direto à empresa (fundador único),
+  #                        formalizado só com contrato particular.
+  #   grupo_lume        — FAQ deles confirma: "entrada que será paga ao
+  #                        Grupo LuME", sem custódia.
+  #   bolsa_consorcio   — marketplace de corretores terceiros independentes;
+  #                        o site só redireciona pro contato do corretor.
+  #   compra_consorcios — mesma coisa, sem checkout nem escrow.
+  #
+  # Todos continuam com adapter funcional no código (registry.py) — dá
+  # pra reativar qualquer um só adicionando de volta nesta lista.
+  #
+  # ConsorcioCred (exige login) e MyCotas/Mycon (bloqueio anti-bot Cloudflare)
+  # ficam de fora da automação por outro motivo — nenhum adapter existe
+  # pra eles ainda.
 
 evidence:
   keep_raw_json: true

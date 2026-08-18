@@ -14,15 +14,17 @@ Telegram as oportunidades dentro dos seus critérios.
   (imóvel/veículo, cada um com piso e teto de crédito e parcela próprios),
   consistência, combinações, deduplicação, persistência SQLite,
   evidências, bot de Telegram com `/silenciar`.
-- **7 sites ativos com adapter real e funcional, sem login**: Contemplei,
-  Bidcon, Prime Cotas e Tramontana Consórcios (API JSON pública) +
-  Franzotti, Grupo LuME e Bolsa do Consórcio (raspagem de tabela HTML) —
-  descobertos/confirmados inspecionando o tráfego de rede real, nunca
-  supostos. Juntos somam mais de 3.000 cotas inspecionáveis por execução.
-- **Compra Consórcios: adapter existe no código mas foi tirado da lista
-  ativa** — o site é só uma intermediadora sem checkout nem conta de
-  garantia/escrow, risco real de golpe (todo pagamento vai direto pra
-  fora da plataforma). Ver seção "Status dos 20 sites".
+- **Só 2 sites ativos: Contemplei e Bidcon** — decisão explícita do
+  usuário, priorizando segurança sobre volume. São os únicos com
+  proteção de pagamento confirmada por escrito no próprio site:
+  Contemplei tem "pagamento em custódia"; Bidcon tem Conta Notarial com
+  escrow no Banco Safra (CNJ 197/2025).
+- **5 sites com adapter pronto no código mas desativados por pagarem
+  direto ao intermediário, sem custódia**: Prime Cotas, Tramontana,
+  Franzotti, Grupo LuME, Bolsa do Consórcio — mesmo risco identificado
+  primeiro na Compra Consórcios (que também tem adapter pronto e
+  desativado). Ver seção "Status dos 20 sites" pra evidência de cada um.
+  Qualquer um pode ser reativado de volta em `sites.active`.
 - **1 site confirmado como exigindo login**: ConsorcioCred
   (`api.consorciocred.com/offer` responde 401 sem sessão).
 - **1 site bloqueado por proteção anti-bot**: MyCotas/Mycon (Cloudflare
@@ -237,17 +239,17 @@ requisição real à internet.
 
 | Site | Login? | Adapter | Observação |
 |---|---|---|---|
-| Contemplei | Não | ✅ Funcional | API pública `/v1/anuncios/publico` |
-| Bidcon | Não | ✅ Funcional | API pública, exige header Origin/Referer |
-| Prime Cotas | Não | ✅ Funcional | Supabase REST com chave anon pública |
-| Tramontana Consórcios | Não | ✅ Funcional | API pública (plataforma "themedeploy") |
+| Contemplei | Não | ✅ **Ativo** | "Pagamento em custódia" — protegido até a transferência ser confirmada. API pública `/v1/anuncios/publico` |
+| Bidcon | Não | ✅ **Ativo** | Conta Notarial, escrow no Banco Safra, CNJ 197/2025. API pública, exige header Origin/Referer |
+| Prime Cotas | Não | ⚠️ Pronto, **desativado** | Sem custódia — WhatsApp direto com "consultor". Supabase REST com chave anon pública |
+| Tramontana Consórcios | Não | ⚠️ Pronto, **desativado** | Sem custódia — botão "Tenho interesse", contato direto. API pública (plataforma "themedeploy") |
 | Consórcio Market | Não | Pendente | Tabela pública rica (tem saldo devedor!), mas vem via RSC — precisa scraping de HTML renderizado |
-| Grupo LuME | Não | Pendente | Preço confirmado em `/consorcios-contemplados-de-imoveis/` |
+| Grupo LuME | Não | ⚠️ Pronto, **desativado** | Sem custódia — FAQ deles confirma: "entrada paga ao Grupo LuME". Raspagem de tabela HTML |
 | Contemplado SP | Não | Pendente | Preço visível na home |
 | DP Consórcios | Não | Pendente | Preço visível na listagem |
-| Franzotti Contemplados | Não | Pendente | Preço confirmado em `/cartas-contempladas-de-imoveis/` |
-| Bolsa do Consórcio | Não | Pendente | Filtro de categoria "imóveis" já na URL, com paginação |
-| Compra Consórcios | Não | ⚠️ Adapter pronto, **desativado** | Só intermediação, sem checkout/escrow — risco de golpe, ver nota acima |
+| Franzotti Contemplados | Não | ⚠️ Pronto, **desativado** | Sem custódia — sinal pago direto à empresa (fundador único), só contrato particular |
+| Bolsa do Consórcio | Não | ⚠️ Pronto, **desativado** | Marketplace de corretores terceiros independentes — site só redireciona pro contato do corretor |
+| Compra Consórcios | Não | ⚠️ Pronto, **desativado** | Só intermediação, sem checkout/escrow — risco de golpe |
 | Cotas Contempladas | Sinal nenhum | Pendente | Preço não confirmado na leitura estática (WP + AJAX); precisa mais inspeção |
 | Consormega | Não | Pendente | Preço visível na home; listagem ainda não mapeada |
 | Toco Consórcios | Não | Pendente | WordPress com admin-ajax |
