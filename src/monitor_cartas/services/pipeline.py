@@ -120,6 +120,18 @@ async def _maybe_alert(
     if not is_new:
         return
 
+    # Site pode listar cota reservada/vendida/removida misturada com as
+    # disponíveis (ex.: Grupo LuME mostra linha vermelha = reservada, sem
+    # coluna de status separada) — nunca alertar isso como oportunidade.
+    if cota.status not in (QuotaStatus.NEW, QuotaStatus.AVAILABLE, QuotaStatus.SEEN):
+        logger.info(
+            "Cota %s/%s com status %s — não é oportunidade disponível, sem alerta.",
+            cota.source_site,
+            cota.source_id,
+            cota.status,
+        )
+        return
+
     if cota.inconsistency_level == InconsistencyLevel.CRITICAL:
         logger.info(
             "Cota %s/%s com inconsistência crítica — alerta de baixa confiança, não o normal.",

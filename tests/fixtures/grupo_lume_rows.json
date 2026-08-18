@@ -1,5 +1,18 @@
 [
   {
+    "rowClass": "",
+    "segmento": "Veículos",
+    "administradora": "ITAU",
+    "credito": "R$ 19.200,00",
+    "entrada": "R$ 4.000,00",
+    "parcelas": "35",
+    "valor_parcela": "607,00",
+    "vencimento": "15/09/2026",
+    "link": "https://cartascontempladas.com.br/informacao-da-carta/?cota=41641",
+    "_modalidade_pagina": "veiculos"
+  },
+  {
+    "rowClass": "bgCinza",
     "segmento": "Imóveis",
     "administradora": "SICOOB",
     "credito": "R$ 46.900,00",
@@ -7,16 +20,31 @@
     "parcelas": "141",
     "valor_parcela": "355,00",
     "vencimento": "03/09/2026",
-    "link": "https://cartascontempladas.com.br/informacao-da-carta/?cota=41060"
+    "link": "https://cartascontempladas.com.br/informacao-da-carta/?cota=41060",
+    "_modalidade_pagina": "imoveis"
   },
   {
-    "segmento": "Imóveis",
-    "administradora": "PORTO",
-    "credito": "R$ 57.350,00",
-    "entrada": "R$ 35.280,00",
-    "parcelas": "153",
-    "valor_parcela": "287,00",
+    "rowClass": "bgVermelho ",
+    "segmento": "Veículos",
+    "administradora": "ITAU",
+    "credito": "R$ 44.500,00",
+    "entrada": "R$ 13.200,00",
+    "parcelas": "47",
+    "valor_parcela": "37 x 10.650,00  + 10 x 460,00",
     "vencimento": "15/09/2026",
-    "link": "https://cartascontempladas.com.br/informacao-da-carta/?cota=42020"
+    "link": null,
+    "_modalidade_pagina": "veiculos"
+  },
+  {
+    "rowClass": "bgVermelho bgEscuro",
+    "segmento": "Veículos",
+    "administradora": "PORTO AF",
+    "credito": "R$ 108.200,00",
+    "entrada": "R$ 22.400,00",
+    "parcelas": "28",
+    "valor_parcela": "25 x 4.386,00  + 3 x 2.242,00",
+    "vencimento": "15/09/2026",
+    "link": null,
+    "_modalidade_pagina": "veiculos"
   }
 ]

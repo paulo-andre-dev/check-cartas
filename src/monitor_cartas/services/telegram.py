@@ -158,19 +158,23 @@ def build_bot_application(settings: Settings, repo: QuotaRepository):
     async def cmd_melhores(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if not await guarded(update):
             return
-        limit = 5
+        limit = 20
         if context.args:
             try:
                 limit = max(1, min(int(context.args[0]), 50))
             except ValueError:
-                await update.message.reply_text("Uso: /melhores [quantidade] (padrão 5, máx 50)")
+                await update.message.reply_text("Uso: /melhores [quantidade] (padrão 20, máx 50)")
                 return
 
+        from monitor_cartas.core.statuses import QuotaStatus
+
+        available_statuses = (QuotaStatus.NEW, QuotaStatus.AVAILABLE, QuotaStatus.SEEN)
         ranked = sorted(
             (
                 c
                 for c in repo.list_opportunities()
                 if c.entry_percentage is not None
+                and c.status in available_statuses
                 and c.opportunity_class in REPORTABLE_CLASSES
                 and passes_modality_limits(c, settings.financial) is not False
             ),

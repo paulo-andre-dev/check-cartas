@@ -36,32 +36,73 @@ def _settings(tmp_path) -> Settings:
     )
 
 
+def _rows():
+    return json.loads((FIXTURES / "grupo_lume_rows.json").read_text())
+
+
 def test_extract_cota_id():
     assert _extract_cota_id("https://cartascontempladas.com.br/informacao-da-carta/?cota=41060") == "41060"
     assert _extract_cota_id(None) is None
 
 
-def test_row_to_cota_parses_real_row(tmp_path):
+def test_row_with_no_class_is_available(tmp_path):
     settings = _settings(tmp_path)
     adapter = GrupoLumeAdapter(settings)
-    rows = json.loads((FIXTURES / "grupo_lume_rows.json").read_text())
+    row = _rows()[0]
 
-    cota = adapter._row_to_cota("41060", rows[0])
-    assert cota.source_site == "grupo_lume"
-    assert cota.source_id == "41060"
-    assert cota.administrator == "SICOOB"
-    assert cota.nominal_credit == Decimal("46900.00")
-    assert cota.advertised_entry == Decimal("14900.00")
-    assert cota.remaining_installments == 141
-    assert cota.current_installment == Decimal("355.00")
+    cota = adapter._row_to_cota("41641", row)
     assert cota.status == QuotaStatus.AVAILABLE
+    assert cota.nominal_credit == Decimal("19200.00")
+    assert cota.advertised_entry == Decimal("4000.00")
+    assert cota.remaining_installments == 35
+    assert cota.current_installment == Decimal("607.00")
+
+
+def test_row_bgcinza_is_available(tmp_path):
+    settings = _settings(tmp_path)
+    adapter = GrupoLumeAdapter(settings)
+    row = _rows()[1]
+
+    cota = adapter._row_to_cota("41060", row)
+    assert cota.status == QuotaStatus.AVAILABLE
+    assert cota.administrator == "SICOOB"
+    assert cota.current_installment == Decimal("355.00")
     assert cota.outstanding_balance is None
 
 
-def test_row_without_link_falls_back_to_matching_modality_page(tmp_path):
+def test_row_bgvermelho_is_reserved_not_available(tmp_path):
+    """Reproduz o bug relatado: linha vermelha (reservada) sem link nem
+    parcela única — antes virava AVAILABLE e aparecia em /melhores."""
+    settings = _settings(tmp_path)
+    adapter = GrupoLumeAdapter(settings)
+    row = _rows()[2]
+
+    cota = adapter._row_to_cota("row-2", row)
+    assert cota.status == QuotaStatus.RESERVED
+    assert cota.nominal_credit == Decimal("44500.00")
+    assert cota.advertised_entry == Decimal("13200.00")
+    # plano escalonado ("37 x 10.650,00 + 10 x 460,00") não é parseado como
+    # valor único — fica desconhecido em vez de virar "37,00" por engano
+    assert cota.current_installment is None
+    assert cota.remaining_installments is None
+    assert cota.quota is None
+
+
+def test_row_bgvermelho_bgescuro_is_reserved(tmp_path):
+    settings = _settings(tmp_path)
+    adapter = GrupoLumeAdapter(settings)
+    row = _rows()[3]
+
+    cota = adapter._row_to_cota("row-3", row)
+    assert cota.status == QuotaStatus.RESERVED
+    assert cota.current_installment is None
+
+
+def test_row_without_link_and_without_class_falls_back_to_matching_modality_page(tmp_path):
     settings = _settings(tmp_path)
     adapter = GrupoLumeAdapter(settings)
     row = {
+        "rowClass": "",
         "segmento": "Veículos",
         "administradora": "ITAU",
         "credito": "R$ 19.200,00",
@@ -76,3 +117,4 @@ def test_row_without_link_falls_back_to_matching_modality_page(tmp_path):
     cota = adapter._row_to_cota("row-7", row)
     assert cota.source_url == "https://cartascontempladas.com.br/cartas-contempladas-de-veiculos/"
     assert cota.quota is None
+    assert cota.status == QuotaStatus.AVAILABLE

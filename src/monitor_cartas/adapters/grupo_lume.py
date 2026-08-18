@@ -10,9 +10,18 @@ inspecionando o DOM real:
   4 valor do crédito          9/10 link "Ver" / "Quero saber mais" ->
                                  informacao-da-carta/?cota=<id>
 
-A própria listagem já filtra por disponibilidade (não há coluna de status
-com valores distintos) — tratamos toda linha retornada como disponível,
-registrado nas extraction_notes. Sem saldo devedor publicado.
+Status real por linha (não é tudo disponível como supus antes — corrigido
+depois de comparar com o site ao vivo): a `<tr>` carrega uma classe CSS
+que indica a situação da cota —
+
+  "" ou "bgCinza"        -> disponível, tem link "Ver"/"Quero saber mais"
+  "bgVermelho"            -> reservada, SEM link individual
+  "bgVermelho bgEscuro"   -> reservada (variante mais escura), SEM link
+
+Nas linhas reservadas, a coluna "valor da parcela" não é um valor único —
+vem como plano escalonado em texto livre (ex.: "37 x 10.650,00 + 10 x
+460,00"), então current_installment fica None pra essas em vez de
+tentar reconstruir um parser de plano escalonado.
 """
 from datetime import datetime, timezone
 from urllib.parse import parse_qs, urlparse
@@ -26,7 +35,7 @@ from monitor_cartas.core.statuses import AdapterAccessBlockReason, QuotaStatus
 from monitor_cartas.services.evidence import save_json_evidence
 from monitor_cartas.settings import Settings
 
-ADAPTER_VERSION = "1.0.0"
+ADAPTER_VERSION = "1.1.0"
 LISTING_URLS = {
     "imoveis": "https://cartascontempladas.com.br/consorcios-contemplados-de-imoveis/",
     "veiculos": "https://cartascontempladas.com.br/cartas-contempladas-de-veiculos/",
@@ -40,6 +49,7 @@ _EXTRACT_JS = """
     const cell = i => (tds[i] ? tds[i].textContent.trim() : '');
     const linkEl = tds[9] ? tds[9].querySelector('a') : null;
     return {
+      rowClass: (tr.className || '').trim(),
       segmento: cell(2),
       administradora: cell(3),
       credito: cell(4),
@@ -126,27 +136,37 @@ class GrupoLumeAdapter(SiteAdapter):
 
     def _row_to_cota(self, cota_id: str, row: dict) -> CotaContemplada:
         is_synthetic_id = cota_id.startswith("row-")
+        row_class = row.get("rowClass", "")
+        is_reserved = "bgVermelho" in row_class
 
         notes = [
             "Saldo devedor não é publicado — consistência não é aplicável.",
             "Nenhuma taxa é discriminada separadamente da entrada — tratadas "
             "como desconhecidas.",
-            "A listagem pública já mostra só cotas disponíveis (sem coluna de "
-            "status com valores distintos) — status assumido AVAILABLE.",
         ]
-        if is_synthetic_id:
+
+        remaining = None
+        current_installment = None
+        if is_reserved:
+            notes.append(
+                f"Linha com classe CSS '{row_class}' (reservada) — coluna de parcela vem "
+                "como plano escalonado em texto livre, não como valor único; "
+                "current_installment fica desconhecido para não inventar um parser."
+            )
+        else:
+            if row.get("parcelas"):
+                try:
+                    remaining = int(row["parcelas"])
+                except ValueError:
+                    remaining = None
+            current_installment = parse_brl_to_decimal(row.get("valor_parcela"))
+
+        if is_synthetic_id and not is_reserved:
             notes.append(
                 "Não foi possível extrair o link/id individual desta linha — "
                 "source_id sintético e link aponta para a listagem geral, não "
                 "para o anúncio específico."
             )
-
-        remaining = None
-        if row.get("parcelas"):
-            try:
-                remaining = int(row["parcelas"])
-            except ValueError:
-                remaining = None
 
         fallback_listing = LISTING_URLS.get(
             row.get("_modalidade_pagina"), LISTING_URLS["imoveis"]
@@ -157,8 +177,8 @@ class GrupoLumeAdapter(SiteAdapter):
             source_id=str(cota_id),
             source_url=row.get("link") or fallback_listing,
             collected_at=datetime.now(timezone.utc),
-            status=QuotaStatus.AVAILABLE,
-            status_raw="listado como disponível",
+            status=QuotaStatus.RESERVED if is_reserved else QuotaStatus.AVAILABLE,
+            status_raw=f"classe css: '{row_class}'" if row_class else "disponível",
             is_contemplated=True,
             modality=row.get("segmento"),
             administrator=row.get("administradora") or None,
@@ -167,7 +187,7 @@ class GrupoLumeAdapter(SiteAdapter):
             nominal_credit=parse_brl_to_decimal(row.get("credito")),
             advertised_entry=parse_brl_to_decimal(row.get("entrada")),
             seller_price=parse_brl_to_decimal(row.get("entrada")),
-            current_installment=parse_brl_to_decimal(row.get("valor_parcela")),
+            current_installment=current_installment,
             remaining_installments=remaining,
             raw_evidence_path=self._evidence_path,
             adapter_version=ADAPTER_VERSION,
