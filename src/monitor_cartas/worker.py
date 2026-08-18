@@ -59,6 +59,13 @@ async def _telegram_loop() -> None:
     app = build_bot_application(settings, repo)
 
     async with app:
+        # Application.initialize() (chamado no __aenter__) não dispara
+        # post_init sozinho — isso só acontece dentro de run_polling()/
+        # run_webhook(), que a gente não usa aqui (ciclo manual pra rodar
+        # em paralelo com a coleta). Sem essa linha, o menu de comandos
+        # (set_my_commands) nunca é registrado no Telegram.
+        if app.post_init:
+            await app.post_init(app)
         await app.start()
         await app.updater.start_polling()
         try:
