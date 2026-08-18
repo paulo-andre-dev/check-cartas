@@ -7,15 +7,22 @@ Telegram as oportunidades dentro dos seus critérios.
 
 ## Estado atual do projeto
 
-- **Fundação completa**: modelos, filtros financeiros, consistência,
-  combinações, deduplicação, persistência SQLite, evidências, bot de
-  Telegram com `/silenciar`. Regras de valor: **sem restrição de crédito
-  por faixa** — qualquer valor entra, desde que a entrada fique até 20%
-  (classificação OURO ≤10%, EXCEPCIONAL ≤12%, MUITO BOA ≤15%, BOA ≤20%).
-- **4 sites com adapter real e funcional, sem login**: Contemplei, Bidcon,
-  Prime Cotas e Tramontana Consórcios — todos com API JSON pública
-  (descobertas inspecionando o tráfego de rede real, nunca supostas).
-  Juntos somam mais de 1.700 cotas de imóveis inspecionáveis por execução.
+- **Rodando em produção no Railway 24/7** (`bot_cartas_contempladas`,
+  projeto `crypto_bot`), worker contínuo com volume persistente, alertas
+  no Telegram. Ver seção "Rodando 24/7 sem depender do notebook".
+- **Fundação completa**: modelos, filtros financeiros por modalidade
+  (imóvel/veículo, cada um com piso e teto de crédito e parcela próprios),
+  consistência, combinações, deduplicação, persistência SQLite,
+  evidências, bot de Telegram com `/silenciar`.
+- **7 sites ativos com adapter real e funcional, sem login**: Contemplei,
+  Bidcon, Prime Cotas e Tramontana Consórcios (API JSON pública) +
+  Franzotti, Grupo LuME e Bolsa do Consórcio (raspagem de tabela HTML) —
+  descobertos/confirmados inspecionando o tráfego de rede real, nunca
+  supostos. Juntos somam mais de 3.000 cotas inspecionáveis por execução.
+- **Compra Consórcios: adapter existe no código mas foi tirado da lista
+  ativa** — o site é só uma intermediadora sem checkout nem conta de
+  garantia/escrow, risco real de golpe (todo pagamento vai direto pra
+  fora da plataforma). Ver seção "Status dos 20 sites".
 - **1 site confirmado como exigindo login**: ConsorcioCred
   (`api.consorciocred.com/offer` responde 401 sem sessão).
 - **1 site bloqueado por proteção anti-bot**: MyCotas/Mycon (Cloudflare
@@ -240,7 +247,7 @@ requisição real à internet.
 | DP Consórcios | Não | Pendente | Preço visível na listagem |
 | Franzotti Contemplados | Não | Pendente | Preço confirmado em `/cartas-contempladas-de-imoveis/` |
 | Bolsa do Consórcio | Não | Pendente | Filtro de categoria "imóveis" já na URL, com paginação |
-| Compra Consórcios | Não | Pendente | Cotas com URL própria (`/consorcios_cotas/<id>/`) |
+| Compra Consórcios | Não | ⚠️ Adapter pronto, **desativado** | Só intermediação, sem checkout/escrow — risco de golpe, ver nota acima |
 | Cotas Contempladas | Sinal nenhum | Pendente | Preço não confirmado na leitura estática (WP + AJAX); precisa mais inspeção |
 | Consormega | Não | Pendente | Preço visível na home; listagem ainda não mapeada |
 | Toco Consórcios | Não | Pendente | WordPress com admin-ajax |

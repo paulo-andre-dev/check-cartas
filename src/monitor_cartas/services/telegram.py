@@ -172,8 +172,8 @@ def _allowed(update, settings: Settings) -> bool:
 # /silenciadas, /erros) continuam funcionando normalmente se digitados —
 # só não poluem o menu.
 BOT_COMMANDS = [
-    ("novas", "Cotas novas dentro dos tetos configurados"),
-    ("melhores", "Top oportunidades por entrada % (padrão 20, ex: /melhores 30)"),
+    ("novas", "Cotas novas"),
+    ("melhores", "Melhores oportunidades"),
 ]
 
 

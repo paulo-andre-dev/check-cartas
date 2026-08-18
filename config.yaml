@@ -51,10 +51,16 @@ sites:
     - tramontana
     - franzotti
     - grupo_lume
-    - compra_consorcios
     - bolsa_consorcio
   # ConsorcioCred (exige login) e MyCotas/Mycon (bloqueio anti-bot Cloudflare)
   # ficam de fora da automação — nenhum adapter foi criado pra eles.
+  #
+  # compra_consorcios removida por risco de golpe: o site é só uma
+  # intermediadora (J. Rodrigues Lima Intermediação de Negócios ME, não é
+  # administradora nem tem vínculo com instituição financeira), sem
+  # checkout, sem conta de garantia/escrow — todo pagamento vai direto pra
+  # essa empresa por fora, sem estrutura de proteção ao comprador. O
+  # adapter continua no código (registry.py) se um dia quiser reativar.
 
 evidence:
   keep_raw_json: true
