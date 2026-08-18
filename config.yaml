@@ -1,0 +1,61 @@
+financial:
+  # target_credit_min/max não filtram cotas individuais — servem só pra
+  # achar combinações de 2-3 cotas que juntas caiam nessa faixa. O filtro
+  # de crédito por cota individual é o de "modalities" mais abaixo.
+  target_credit_min: 300000.00
+  target_credit_max: 400000.00
+
+  credit_basis: liquid
+  fallback_to_nominal_credit: true
+
+  max_entry_percentage: 0.15
+  gold_entry_percentage: 0.10
+  good_entry_percentage: 0.30
+
+  # teto genérico, usado só como fallback quando a modalidade da cota não
+  # é reconhecida (nem imóvel nem veículo)
+  max_monthly_payment: 6000.00
+
+  modalities:
+    imovel:
+      max_credit: 400000.00
+      max_monthly_payment: 6000.00
+    veiculo:
+      max_credit: 200000.00
+      max_monthly_payment: 2500.00
+
+  combination:
+    enabled: true
+    minimum_quotas: 2
+    maximum_quotas: 3
+    maximum_results: 20
+    require_same_administrator: true
+    allow_unconfirmed_rules: true
+
+  consistency:
+    warning_difference_percentage: 0.15
+    critical_difference_percentage: 0.35
+
+monitoring:
+  run_time: "08:00"
+  timezone: "America/Recife"
+  alert_if_last_success_older_than_hours: 30
+  missing_runs_before_removed: 3
+
+sites:
+  active:
+    - contemplei
+    - bidcon
+    - prime_cotas
+    - tramontana
+    - franzotti
+    - grupo_lume
+    - compra_consorcios
+    - bolsa_consorcio
+  # ConsorcioCred (exige login) e MyCotas/Mycon (bloqueio anti-bot Cloudflare)
+  # ficam de fora da automação — nenhum adapter foi criado pra eles.
+
+evidence:
+  keep_raw_json: true
+  keep_html: true
+  keep_screenshot: false

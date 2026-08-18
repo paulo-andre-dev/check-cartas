@@ -1,0 +1,46 @@
+{
+  "rows": [
+    {
+      "id": "4061",
+      "segmento": "Imóvel",
+      "administradora": "Itaú",
+      "credito": "R$ 70.000,00",
+      "entrada": "R$ 32.750,00",
+      "parcelas": "138",
+      "valor_parcela": "R$ 549,23",
+      "observacao": "",
+      "vencimento": "05/09/2026",
+      "disponivel": true,
+      "link": "https://franzotticontemplados.com.br/carta/pg2-imovel-13-4061/",
+      "_modalidade_pagina": "imoveis"
+    },
+    {
+      "id": "4103",
+      "segmento": "Imóvel",
+      "administradora": "Porto Bank",
+      "credito": "R$ 144.100,00",
+      "entrada": "R$ 56.425,50",
+      "parcelas": "71",
+      "valor_parcela": "R$ 1.876,00",
+      "observacao": "",
+      "vencimento": "15/08/2026",
+      "disponivel": true,
+      "link": "https://franzotticontemplados.com.br/carta/pg2-imovel-13-4103/",
+      "_modalidade_pagina": "imoveis"
+    },
+    {
+      "id": "4024",
+      "segmento": "Imóvel",
+      "administradora": "Bradesco",
+      "credito": "R$ 143.600,00",
+      "entrada": "R$ 65.798,00",
+      "parcelas": "142",
+      "valor_parcela": "R$ 1.030,77",
+      "observacao": "",
+      "vencimento": "10/09/2026",
+      "disponivel": false,
+      "link": "https://franzotticontemplados.com.br/carta/pg2-imovel-13-4024/",
+      "_modalidade_pagina": "imoveis"
+    }
+  ]
+}

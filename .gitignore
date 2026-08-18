@@ -1,0 +1,10 @@
+.env
+data/*.db
+data/sessions/
+data/evidence/
+logs/
+__pycache__/
+.pytest_cache/
+.venv/
+*.pyc
+src/monitor_cartas.egg-info/

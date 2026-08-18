@@ -1,0 +1,443 @@
+[
+    {
+        "id": "cd965486-719e-4a7a-87fb-0cb784214f3f",
+        "numero_cota": "294700",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0106.600,00",
+        "entrada": "R$\u00a041.000,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "201",
+                "valorParcela": "R$\u00a0682,29"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T20:01:57.850395+00:00",
+        "updated_at": "2026-08-11T20:01:57.850395+00:00"
+    },
+    {
+        "id": "5ae56e88-b793-4f69-8a69-c010ceda76ea",
+        "numero_cota": "294701",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0107.910,00",
+        "entrada": "R$\u00a041.400,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "167",
+                "valorParcela": "R$\u00a0772,04"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T20:00:30.930784+00:00",
+        "updated_at": "2026-08-11T20:00:30.930784+00:00"
+    },
+    {
+        "id": "1b31b386-ff98-451b-a3fb-161c91d4f5d8",
+        "numero_cota": "294702",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0106.680,00",
+        "entrada": "R$\u00a041.000,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "200",
+                "valorParcela": "R$\u00a0687,05"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:58:31.599308+00:00",
+        "updated_at": "2026-08-11T19:58:52.870861+00:00"
+    },
+    {
+        "id": "6c544155-98de-4d36-99ce-f1dbff9204dc",
+        "numero_cota": "294703",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0107.000,00",
+        "entrada": "R$\u00a041.000,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "195",
+                "valorParcela": "R$\u00a0655,47"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:57:13.443916+00:00",
+        "updated_at": "2026-08-11T19:57:13.443916+00:00"
+    },
+    {
+        "id": "4d0a817f-fda5-4e8d-9290-9e65a993a7bb",
+        "numero_cota": "294704",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0138.800,00",
+        "entrada": "R$\u00a052.900,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "161",
+                "valorParcela": "R$\u00a01.053,78"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:54:17.446474+00:00",
+        "updated_at": "2026-08-11T19:54:17.446474+00:00"
+    },
+    {
+        "id": "eb590d1f-1c21-48a9-ba33-e0206667fbc6",
+        "numero_cota": "294705",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a086.400,00",
+        "entrada": "R$\u00a033.600,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "138",
+                "valorParcela": "R$\u00a0774,42"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:50:07.253618+00:00",
+        "updated_at": "2026-08-11T19:50:07.253618+00:00"
+    },
+    {
+        "id": "67b6bb05-5c17-4c52-8c52-5368e6693605",
+        "numero_cota": "294706",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0100.000,00",
+        "entrada": "R$\u00a039.200,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "211",
+                "valorParcela": "R$\u00a0644,02"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:48:37.754421+00:00",
+        "updated_at": "2026-08-11T19:48:37.754421+00:00"
+    },
+    {
+        "id": "b87a5467-f280-4423-8539-dc9c41890e7f",
+        "numero_cota": "294707",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0107.777,00",
+        "entrada": "R$\u00a042.300,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "189",
+                "valorParcela": "R$\u00a0691,81"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:47:08.904529+00:00",
+        "updated_at": "2026-08-11T19:47:08.904529+00:00"
+    },
+    {
+        "id": "cf0ea5bb-d8bd-480e-afd3-5bd3eb3404a8",
+        "numero_cota": "294708",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0107.390,00",
+        "entrada": "R$\u00a042.200,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "196",
+                "valorParcela": "R$\u00a0689,69"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:42:47.739122+00:00",
+        "updated_at": "2026-08-11T19:42:47.739122+00:00"
+    },
+    {
+        "id": "b01b86aa-d236-4120-ba24-d827a7cf2dc4",
+        "numero_cota": "294709",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0101.775,00",
+        "entrada": "R$\u00a040.000,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "210",
+                "valorParcela": "R$\u00a0644,02"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:40:51.731407+00:00",
+        "updated_at": "2026-08-11T19:40:51.731407+00:00"
+    },
+    {
+        "id": "976a0238-6c24-4f74-85c5-e20744de5f3a",
+        "numero_cota": "294710",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0100.000,00",
+        "entrada": "R$\u00a039.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "179",
+                "valorParcela": "R$\u00a0740,82"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-09-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-11T19:29:55.499072+00:00",
+        "updated_at": "2026-08-11T19:29:55.499072+00:00"
+    },
+    {
+        "id": "8d792229-9ee2-4ca8-9962-ca42bdd444bf",
+        "numero_cota": "294616",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0150.000,00",
+        "entrada": "R$\u00a061.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "189",
+                "valorParcela": "R$\u00a0933,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-10T15:34:02.361186+00:00",
+        "updated_at": "2026-08-10T15:34:02.361186+00:00"
+    },
+    {
+        "id": "4ebf2709-199b-4d42-a30e-e0c8df585a5f",
+        "numero_cota": "294614",
+        "category": "IM\u00d3VEL",
+        "administradora": "Yamaha",
+        "valor_credito": "R$\u00a0102.000,00",
+        "entrada": "R$\u00a041.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "226",
+                "valorParcela": "R$\u00a0528,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-17",
+        "data_sorteio": "2026-08-17",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-10T15:29:27.19286+00:00",
+        "updated_at": "2026-08-10T15:29:27.19286+00:00"
+    },
+    {
+        "id": "b3cb9150-0a29-47ea-b3da-f1e127ca83de",
+        "numero_cota": "294604",
+        "category": "IM\u00d3VEL",
+        "administradora": "BRADESCO",
+        "valor_credito": "R$\u00a0363.000,00",
+        "entrada": "R$\u00a0144.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "99",
+                "valorParcela": "R$\u00a03.495,00"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-08-10",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-10T15:13:06.555058+00:00",
+        "updated_at": "2026-08-10T15:14:00.517664+00:00"
+    },
+    {
+        "id": "f73d275f-5723-4e45-8cd0-496e245abdce",
+        "numero_cota": "294125",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0125.000,00",
+        "entrada": "R$\u00a052.900,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "155",
+                "valorParcela": "R$\u00a0812,90"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-08-04T18:17:40.058047+00:00",
+        "updated_at": "2026-08-04T18:17:40.058047+00:00"
+    },
+    {
+        "id": "5c2022b1-9aa1-4407-892e-76c6ea075677",
+        "numero_cota": "294133",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0133.625,00",
+        "entrada": "R$\u00a049.000,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "104",
+                "valorParcela": "R$\u00a01.393,50"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-30T20:49:06.119913+00:00",
+        "updated_at": "2026-07-30T20:49:06.119913+00:00"
+    },
+    {
+        "id": "688ad109-ce4c-46d9-97a1-080e74a2f3e3",
+        "numero_cota": "294600",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0165.000,00",
+        "entrada": "R$\u00a059.900,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "59",
+                "valorParcela": "R$\u00a02.905,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-30T20:34:50.423733+00:00",
+        "updated_at": "2026-07-30T20:34:50.423733+00:00"
+    },
+    {
+        "id": "9af5075e-2b64-435a-85dc-2a276edc8a6b",
+        "numero_cota": "294611",
+        "category": "IM\u00d3VEL",
+        "administradora": "Rodobens",
+        "valor_credito": "R$\u00a0108.000,00",
+        "entrada": "R$\u00a042.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "197",
+                "valorParcela": "R$\u00a0637,00"
+            }
+        ],
+        "proximo_vencimento": "2026-09-10",
+        "data_sorteio": "2026-08-13",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-30T20:31:32.615431+00:00",
+        "updated_at": "2026-08-14T15:19:15.337639+00:00"
+    },
+    {
+        "id": "4981dded-3839-40b4-9a5b-12bb80944b22",
+        "numero_cota": "294605",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0506.000,00",
+        "entrada": "R$\u00a0205.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "177",
+                "valorParcela": "R$\u00a03.474,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-30T20:25:47.701981+00:00",
+        "updated_at": "2026-07-30T20:25:47.701981+00:00"
+    },
+    {
+        "id": "a1f13200-140d-4412-adbf-eb3aae86b826",
+        "numero_cota": "294609",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a0150.000,00",
+        "entrada": "R$\u00a061.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "189",
+                "valorParcela": "R$\u00a0933,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-30T20:16:41.734888+00:00",
+        "updated_at": "2026-07-30T20:16:41.734888+00:00"
+    },
+    {
+        "id": "8829c2a4-7fc3-4f6d-8e87-4dee06fc9ab9",
+        "numero_cota": "294613",
+        "category": "IM\u00d3VEL",
+        "administradora": "Porto Seguro",
+        "valor_credito": "R$\u00a073.500,00",
+        "entrada": "R$\u00a031.500,00",
+        "opcoes_parcelamento": [
+            {
+                "parcelas": "225",
+                "valorParcela": "R$\u00a0391,00"
+            }
+        ],
+        "proximo_vencimento": "2026-08-15",
+        "data_sorteio": "2026-08-15",
+        "regras": [],
+        "tipo_carta": "CONTEMPLADA",
+        "is_published": true,
+        "created_at": "2026-07-27T20:48:46.692707+00:00",
+        "updated_at": "2026-07-27T21:13:41.90874+00:00"
+    }
+]

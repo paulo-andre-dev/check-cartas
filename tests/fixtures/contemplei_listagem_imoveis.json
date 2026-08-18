@@ -1,0 +1,80 @@
+{
+    "data": [
+        {
+            "id": "851da047-078e-4c28-b725-0e8d4f5fe69f",
+            "seoSlug": "carta-contemplada-imoveis-caixa-consorcios-251-mil-324351",
+            "destaque": false,
+            "shareSlug": "4lnoEfkA04",
+            "codigo": "324351",
+            "segmento": "imoveis",
+            "subcategoria": null,
+            "situacao": "Contemplada",
+            "grupo": "5805",
+            "administradoraNome": "Caixa Cons\u00f3rcios",
+            "administradoraId": "1155772a-2d7e-4348-82ad-8c2f22e09bff",
+            "administradoraHasLogo": true,
+            "administradoraLogoVersion": "1782309639213",
+            "creditoCents": 25166300,
+            "entradaCents": 10318352,
+            "prazoRestanteMeses": 195,
+            "parcelaSemSeguroCents": 157900,
+            "seguroMensalCents": 0,
+            "saldoDevedorCents": 30790500,
+            "valorPagoCorrigidoCents": 0,
+            "taxaTransferenciaCents": 125000,
+            "taxaAnaliseCents": 0,
+            "regrasUtilizacao": "O cr\u00e9dito desta carta deve ser utilizado conforme as regras de utiliza\u00e7\u00e3o da administradora Caixa Cons\u00f3rcios e o regulamento do grupo/cota. Consulte o regulamento oficial da Caixa Cons\u00f3rcios para detalhes sobre destina\u00e7\u00e3o do cr\u00e9dito, prazos e condi\u00e7\u00f5es de uso.",
+            "politicaCancelamento": "O cancelamento e a desist\u00eancia seguem a pol\u00edtica vigente da administradora Caixa Cons\u00f3rcios, incluindo eventuais taxas e prazos previstos em contrato. Consulte o regulamento oficial da Caixa Cons\u00f3rcios antes de prosseguir.",
+            "calculos": {
+                "entradaPct": 0.4100067153296273,
+                "sinalCents": 515918,
+                "parcelaComSeguroCents": 157900,
+                "taxaPlataformaCents": 503326,
+                "custoMensal": 0.005976168813661962,
+                "cetMensal": 0.0092662638053298,
+                "financeiroCoerente": true
+            }
+        },
+        {
+            "id": "8bb35cd8-439f-47c2-9f7b-0923aafeca50",
+            "seoSlug": "carta-contemplada-imoveis-zema-consorcios-177-mil-587889",
+            "destaque": false,
+            "shareSlug": "IhoicPyZJU",
+            "codigo": "587889",
+            "segmento": "imoveis",
+            "subcategoria": null,
+            "situacao": "Contemplada",
+            "grupo": "5411",
+            "administradoraNome": "Zema Cons\u00f3rcios",
+            "administradoraId": "3a2ed892-8ace-4cc2-9102-0030bde79b0d",
+            "administradoraHasLogo": true,
+            "administradoraLogoVersion": "1781911448189",
+            "creditoCents": 17732800,
+            "entradaCents": 7004512,
+            "prazoRestanteMeses": 141,
+            "parcelaSemSeguroCents": 150900,
+            "seguroMensalCents": 0,
+            "saldoDevedorCents": 21276900,
+            "valorPagoCorrigidoCents": 0,
+            "taxaTransferenciaCents": 175000,
+            "taxaAnaliseCents": 0,
+            "regrasUtilizacao": "O cr\u00e9dito desta carta deve ser utilizado conforme as regras de utiliza\u00e7\u00e3o da administradora Zema Cons\u00f3rcios e o regulamento do grupo/cota. Consulte o regulamento oficial da Zema Cons\u00f3rcios para detalhes sobre destina\u00e7\u00e3o do cr\u00e9dito, prazos e condi\u00e7\u00f5es de uso.",
+            "politicaCancelamento": "O cancelamento e a desist\u00eancia seguem a pol\u00edtica vigente da administradora Zema Cons\u00f3rcios, incluindo eventuais taxas e prazos previstos em contrato. Consulte o regulamento oficial da Zema Cons\u00f3rcios antes de prosseguir.",
+            "calculos": {
+                "entradaPct": 0.39500315798971397,
+                "sinalCents": 350226,
+                "parcelaComSeguroCents": 150900,
+                "taxaPlataformaCents": 354656,
+                "custoMensal": 0.007703903483893201,
+                "cetMensal": 0.012070835568010807,
+                "financeiroCoerente": true
+            }
+        }
+    ],
+    "meta": {
+        "success": true,
+        "total": 115,
+        "page": 1,
+        "pageSize": 2
+    }
+}

@@ -1,0 +1,26 @@
+[
+  {
+    "codigo": "8195",
+    "segmento": "Imovel",
+    "administradora": "porto seguro",
+    "credito": "R$305.700,00",
+    "entrada": "R$ 145.000,00",
+    "contemplado": "Contemplado",
+    "valor_mensal": "R$ 2.010,00",
+    "pct_pago": "0,0",
+    "status": "Disponivel",
+    "link": "https://www.compraconsorcios.com.br/consorcios_cotas/700-586/?_post_id=8195"
+  },
+  {
+    "codigo": "8269",
+    "segmento": "Imovel",
+    "administradora": "embracon",
+    "credito": "R$412.000,00",
+    "entrada": "R$ 210.500,00",
+    "contemplado": "Contemplado",
+    "valor_mensal": "R$ 3.150,00",
+    "pct_pago": "0,0",
+    "status": "Reservado",
+    "link": "https://www.compraconsorcios.com.br/consorcios_cotas/700-588/?_post_id=8269"
+  }
+]

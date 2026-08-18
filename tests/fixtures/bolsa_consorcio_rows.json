@@ -1,0 +1,28 @@
+[
+  {
+    "administradora": "PORTO SEGURO",
+    "credito": "23.000,00",
+    "entrada": "8.900,00",
+    "parc_restantes": "73 x R$ 340.00",
+    "proxima_parcela": "340,00",
+    "saldo_devedor": "---",
+    "vencimento": "10/09/2026",
+    "composicao": "Única",
+    "status": "Disponível",
+    "link": "https://www.bolsadoconsorcio.com.br/consorcio/cota-contemplada-porto-seguro-para-imoveis-no-valor-r-23-00000/",
+    "_modalidade_pagina": "imoveis"
+  },
+  {
+    "administradora": "BRADESCO",
+    "credito": "41.838,00",
+    "entrada": "19.190,00",
+    "parc_restantes": "167 X 433",
+    "proxima_parcela": "433,00",
+    "saldo_devedor": "72.311,00",
+    "vencimento": "10/09/2026",
+    "composicao": "---",
+    "status": "Reservada",
+    "link": "https://www.bolsadoconsorcio.com.br/consorcio/cota-contemplada-bradesco-para-imoveis-no-valor-r-41-83800/",
+    "_modalidade_pagina": "imoveis"
+  }
+]
