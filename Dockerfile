@@ -5,7 +5,7 @@ WORKDIR /app
 COPY pyproject.toml ./
 COPY src ./src
 RUN pip install --no-cache-dir -e . \
-    && playwright install --with-deps chromium
+    && playwright install --with-deps --only-shell chromium
 
 COPY config.yaml config.example.yaml ./
 
