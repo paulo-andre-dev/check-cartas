@@ -1,10 +1,11 @@
-FROM mcr.microsoft.com/playwright/python:v1.62.0-jammy
+FROM python:3.12-slim
 
 WORKDIR /app
 
 COPY pyproject.toml ./
 COPY src ./src
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir -e . \
+    && playwright install --with-deps chromium
 
 COPY config.yaml config.example.yaml ./
 
